@@ -142,6 +142,14 @@
       forAllSystems =
         f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
 
+      fragments = [
+        "base"
+        "nix"
+        "ascii"
+        "markdown"
+        "yaml"
+      ];
+
       wrap =
         pkgs: name: src: extra:
         pkgs.writeShellApplication (
@@ -252,6 +260,7 @@
       devShells = forAllSystems (
         pkgs:
         let
+          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
           sys = pkgs.stdenv.hostPlatform.system;
         in
         set-and-setting.lib.mkDevShells {
@@ -265,9 +274,11 @@
           ];
           defaultShellHook = ''
             ${self.packages.${sys}.setting}/bin/sync-setting .
+            cp -f ${mat.files}/lefthook.yml lefthook.yml
           '';
           agenticShellHook = ''
             ${self.packages.${sys}.setting}/bin/sync-setting .
+            cp -f ${mat.files}/lefthook.yml lefthook.yml
             ${self.packages.${sys}.set}/bin/sync-set .
           '';
         }
@@ -278,15 +289,8 @@
       checks = forAllSystems (
         pkgs:
         (set-and-setting.lib.checksFor {
-          inherit pkgs;
+          inherit pkgs fragments;
           src = ./.;
-          fragments = [
-        "base"
-        "nix"
-        "ascii"
-        "markdown"
-        "yaml"
-          ];
         })
         // {
           dep-graph = set-and-setting.lib.mkDepGraphCheck {
@@ -296,5 +300,33 @@
           default = pkgs.runCommand "checks" { } "touch $out";
         }
       );
+
+      apps = forAllSystems (pkgs: {
+        confirm = {
+          type = "app";
+          program = "${
+            pkgs.writeShellApplication {
+              name = "confirm";
+              runtimeInputs = (lefthookWrappersFor pkgs) ++ [
+                pkgs.coreutils
+                pkgs.diffutils
+                pkgs.findutils
+                pkgs.gawk
+                pkgs.git
+                pkgs.gnugrep
+              ];
+              runtimeEnv = {
+                FRAGMENTS_DIR = "${set-and-setting}/setting/integrations/lefthook";
+                ASSEMBLE_SCRIPT = "${set-and-setting}/setting/lib/assemble-lefthook.sh";
+                DETECT_SCRIPT = "${set-and-setting}/setting/lib/detect-fragments.sh";
+                SETTING_SRC = "${self.packages.${pkgs.stdenv.hostPlatform.system}.setting}";
+                CONFIRM_SCRIPT = "${set-and-setting}/lib/confirm.sh";
+                CONFIRM_REV = set-and-setting.rev or "unknown";
+              };
+              text = builtins.readFile "${set-and-setting}/lib/app-confirm.sh";
+            }
+          }/bin/confirm";
+        };
+      });
     };
 }
