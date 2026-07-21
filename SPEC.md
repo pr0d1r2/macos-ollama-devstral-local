@@ -129,3 +129,4 @@ T35|.|README — dev/CI section: nix devShell, lefthook, CI action (runtime need
 
 id|date|cause|fix
 B1|2026-07-21|LAN `curl <ip>:11434` connection refused. ollama defaults to 127.0.0.1 bind (localhost only). launchctl setenv path unreliable/non-persistent + no firewall handling. Fix verified: Ollama.app Settings → "Expose Ollama to the network" toggle (binds 0.0.0.0 + firewall + persists)|V15,V35
+B2|2026-07-21|`guardrails / check` failed because the reusable workflow runs `nix run .#confirm`, but the migrated flake did not export that app; its dev shell also let lefthook create an example config instead of materializing the fragment-derived config|Added the standard pinned confirm app with the repository's lefthook wrappers on its runtime path and made both dev shells install the pinned fragment-derived `lefthook.yml`
