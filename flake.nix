@@ -12,11 +12,6 @@
 
     set-and-setting.url = "github:pr0d1r2/set-and-setting";
 
-    nix-lefthook = {
-      url = "github:pr0d1r2/nix-lefthook";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-lefthook-ascii-only-src = {
       url = "github:pr0d1r2/nix-lefthook-ascii-only";
       flake = false;
@@ -108,7 +103,6 @@
       self,
       nixpkgs,
       set-and-setting,
-      nix-lefthook,
       nix-lefthook-ascii-only-src,
       nix-lefthook-deadnix-src,
       nix-lefthook-editorconfig-checker-src,
@@ -270,7 +264,7 @@
             pkgs.git
             pkgs.nix
             pkgs.gh
-            nix-lefthook.packages.${sys}.default
+            pkgs.lefthook
           ];
           defaultShellHook = ''
             ${self.packages.${sys}.setting}/bin/sync-setting .

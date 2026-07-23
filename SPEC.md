@@ -2,14 +2,18 @@
 
 ## §G GOAL
 
-Drop-in bare scripts. Download zip from public repo → unpack → run `start.sh`. Checks `/Applications/Ollama.app`; if missing, opens https://ollama.com/download in browser + clear on-screen steps + waits for manual install. Ollama.app = installer ONLY (provides CLI + runtime). After install, headless: own LaunchAgent runs bundled `ollama serve` on `0.0.0.0:11434` at login (RunAtLoad, KeepAlive), env baked in plist. Model warm always (KEEP_ALIVE=-1 + preload), response-optimized. No GUI after first install. Pulls devstral 24B, healthchecks. Fastest fresh-mac → shared LAN inference endpoint. start/stop/restart/uninstall. Agent gateways (opencode/pi/codex) via config injection. README maps RAM size → config, tiers 16..128 GB.
+Drop-in bare scripts. Download zip from public repo → unpack → run `start.sh`. Checks `/Applications/Ollama.app`; if missing, opens the [Ollama download page](https://ollama.com/download) with clear on-screen steps and waits for manual install. Ollama.app provides the CLI and runtime.
+
+After install, an own LaunchAgent runs bundled `ollama serve` on `0.0.0.0:11434` at login (RunAtLoad, KeepAlive), with env baked into its plist. The model stays warm (KEEP_ALIVE=-1 + preload) and response-optimized. No GUI is needed after the first install.
+
+Pulls devstral 24B and healthchecks. Fastest fresh-mac → shared LAN inference endpoint. Includes start/stop/restart/uninstall and agent gateways (opencode/pi/codex) via config injection. README maps RAM size to config for tiers 16 through 128 GB.
 
 Arch = B: own LaunchAgent runs headless `ollama serve`. Ollama.app only installs binary; its menubar autostart disabled → no rival serve, no port clash.
 
 ## §C CONSTRAINTS
 
 - C1 macOS Apple Silicon (arm64) only. Runtime `uname -m` guard.
-- C2 ollama via `/Applications/Ollama.app` (from https://ollama.com/download), installer only. CLI at `/Applications/Ollama.app/Contents/Resources/ollama`, PATH fallback.
+- C2 ollama via `/Applications/Ollama.app` (from the [Ollama download page](https://ollama.com/download)), installer only. CLI at `/Applications/Ollama.app/Contents/Resources/ollama`, PATH fallback.
 - C3 headless service: LaunchAgent runs `ollama serve` w/ env in plist (`OLLAMA_HOST=0.0.0.0:11434`, keep_alive, ctx, num_parallel). RunAtLoad + KeepAlive. Starts after login.
 - C4 Ollama.app menubar autostart disabled after install → no rival serve, no port clash. Best-effort programmatic + documented manual fallback.
 - C5 trusted network only. No auth, no TLS, bare endpoint. Security warning mandatory. macOS firewall incoming-prompt = expected OS security feature.
@@ -36,7 +40,7 @@ Arch = B: own LaunchAgent runs headless `ollama serve`. Ollama.app only installs
 - I.config `config.sh` — model, port, quant, ctx, keep_alive, num_parallel, tier
 - I.service LaunchAgent plist → `~/Library/LaunchAgents/*.plist` — runs `ollama serve`, env, RunAtLoad, KeepAlive, log paths
 - I.api ollama HTTP `0.0.0.0:11434` (`/api/tags`, `/api/generate`)
-- I.dl https://ollama.com/download opened via `open` when app missing
+- I.dl [Ollama download page](https://ollama.com/download) opened via `open` when app missing
 - I.lan clients reach `http://<mac>.local:11434` (Bonjour)
 - I.readme `README.md` — RAM tiers, usage, LAN, security
 - I.helpers `scripts/` — get-model, status, models, test, prompt (sh, adapted from a sibling ollama-helper project)
@@ -83,7 +87,8 @@ Arch = B: own LaunchAgent runs headless `ollama serve`. Ollama.app only installs
 - V32 plist xmllint-valid; templates taplo(toml)/json-valid; README markdownlint+typos clean; workflow actionlint+yamllint clean.
 - V33 no leaked secrets (gitleaks) — dummy key `ollama` only; no personal local paths (git-no-local-paths) — scripts generic.
 - V34 config templates substituted via `sed` at runtime (`__BASE_URL__`,`__MODEL__`). No envsubst dep.
-- V35 app-toggle path (Ollama.app Settings → "Expose Ollama to the network", verified macOS 26.x) = FASTEST to working endpoint, binds 0.0.0.0 + firewall + persists. Aligns w/ §G goal (speed, trusted net). Acceptable within trusted-net premise (C4). README flags insecure caveat: always-on/all-networks → turn OFF when leaving trusted network. Not disqualified — it's the quick path. Headless launchd service (arch B) = managed/scoped alternative for persistent unattended use.
+- V35 app-toggle path (Ollama.app Settings → "Expose Ollama to the network", verified macOS 26.x) is fastest to a working endpoint; it binds 0.0.0.0, handles the firewall, and persists. Aligns with §G speed/trusted-net goal and C4.
+  README warns that it is always on for all networks and must be turned off when leaving a trusted network. The headless launchd service (arch B) is the managed alternative for persistent unattended use.
 
 ## §T TASKS
 
@@ -99,7 +104,7 @@ T8|.|export OLLAMA_HOST in scripts for own CLI calls|C16,V20
 T9|.|devstral pull, skip if present|V9,C8
 T10|.|warm/preload model on start (priming generate)|V18,C15
 T11|.|healthcheck helper — curl /api/tags|V15,I.api
-T12|.|start.sh — orchestrate T2-T11, print <mac>.local endpoint|V1,V5,V15,I.start
+T12|.|start.sh — orchestrate T2-T11, print `<mac>.local` endpoint|V1,V5,V15,I.start
 T13|.|stop.sh — launchctl unload, safe when idle|V6,V16,I.stop
 T14|.|restart.sh — unload then load|V7,I.restart
 T15|.|uninstall.sh — stop first, rm plist, unset, optional rm model|V8,I.uninstall
@@ -110,7 +115,7 @@ T19|.|README — usage: download zip, unpack, run start.sh|C7,I.readme
 T20|.|README — per-tier table 16..128 GB (quant, ctx); 16GB marginal|V13,C12
 T21|.|README — security warning trusted net + firewall Allow note|V14,C5
 T21a|.|README — app-toggle LAN-bind: Ollama.app Settings → "Expose Ollama to the network" (step-by-step, verified macOS 26.x) = FASTEST path, valid for trusted-net goal. Insecure caveat: turn OFF when leaving trusted net. Verify `lsof -nP -iTCP:11434 -sTCP:LISTEN` shows `*:11434`; troubleshoot connection-refused|V35,B1,I.readme
-T22|.|README — LAN reach <mac>.local:11434, find hostname|C14,I.lan
+T22|.|README — LAN reach `<mac>.local:11434`, find hostname|C14,I.lan
 T23|.|config — per-agent binary + config path + base_url(/v1) + model + dummy key `ollama`|V25,V28,I.config
 T24|.|agent-lib.sh — resolve real binary (skip self via PATH minus script dir), verify model tag /v1/models, exec "$@"|V24,V26,V27,V28,I.agents
 T25|.|agent-opencode.sh — write ~/.config/opencode/opencode.json: provider.ollama {npm:@ai-sdk/openai-compatible, options.baseURL, models.devstral}, model="ollama/devstral"; exec opencode|V24,V25,I.agents
@@ -120,7 +125,7 @@ T28|.|README — agent gateways: CLI + inference proxy; install (pi via `ollama 
 T29|.|templates/ — opencode.json, codex.config.toml, pi.models.json w/ __BASE_URL__/__MODEL__ placeholders|C18,I.templates
 T30|.|wrappers substitute template via sed → agent config path (T25-T27 read templates)|C18,V34,I.templates
 T31|x|flake.nix devShell — nix-dev-shell-agentic mkShells CI/dev split (dev/CI only)|C17,V29,I.dev
-T32|~|lefthook.yml — baseline 15 remotes DONE (shellcheck/shfmt/nixfmt/statix/deadnix/yamllint/typos/trailing-ws/final-newline/conflict/editorconfig/no-local-paths/vulnix/flake-check/no-embedded-shell). PENDING add: execute-permissions, bats-unit, bats-changed, unit-coverage, xmllint, taplo, markdownlint, actionlint, gitleaks|V30,V31,V32,V33,I.hooks
+T32|~|lefthook.yml — baseline 15 remotes done. Pending: execute-permissions, bats-unit/changed, unit-coverage, xmllint, taplo, markdownlint, actionlint, gitleaks|V30,V31,V32,V33,I.hooks
 T33|x|.github/workflows/ci.yml — nix develop .#ci lefthook run, ubuntu + macos|C17,V30,I.ci
 T34|.|tests/unit/*.bats — per-script, curl mocked via MOCK_BIN; template-substitution tests|V31,I.helpers
 T35|.|README — dev/CI section: nix devShell, lefthook, CI action (runtime needs none)|C17,I.readme
@@ -129,4 +134,5 @@ T35|.|README — dev/CI section: nix devShell, lefthook, CI action (runtime need
 
 id|date|cause|fix
 B1|2026-07-21|LAN `curl <ip>:11434` connection refused. ollama defaults to 127.0.0.1 bind (localhost only). launchctl setenv path unreliable/non-persistent + no firewall handling. Fix verified: Ollama.app Settings → "Expose Ollama to the network" toggle (binds 0.0.0.0 + firewall + persists)|V15,V35
-B2|2026-07-21|`guardrails / check` failed because the reusable workflow runs `nix run .#confirm`, but the migrated flake did not export that app; its dev shell also let lefthook create an example config instead of materializing the fragment-derived config|Added the standard pinned confirm app with the repository's lefthook wrappers on its runtime path and made both dev shells install the pinned fragment-derived `lefthook.yml`
+B2|2026-07-21|Reusable guardrails ran `nix run .#confirm`, but the migrated flake lacked that app; its dev shell also created an example config instead of the fragment-derived config|Added the pinned confirm app with lefthook wrappers and made both dev shells install the fragment-derived `lefthook.yml`
+B3|2026-07-23|`guardrails / check` failed after the pin refresh because `nix-lefthook` no longer exported `packages.<system>.default`, so evaluating the default dev shell raised `attribute 'default' missing`|Use the `lefthook` package from the pinned nixpkgs package set directly
