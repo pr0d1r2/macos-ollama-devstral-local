@@ -752,6 +752,22 @@
         "type": "github"
       }
     },
+    "nix-lefthook-unicode-lint-src_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784762106,
+        "narHash": "sha256-OUwOYOy3/gP9yicfXukDN4PkcPWC+fvqw3bJ4KX+5Ig=",
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-unicode-lint",
+        "rev": "179708922ea9ff3086a7fb501276e0cbd936cf11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-unicode-lint",
+        "type": "github"
+      }
+    },
     "nix-lefthook-yamllint-src": {
       "flake": false,
       "locked": {
@@ -874,6 +890,7 @@
         "nix-lefthook-statix-src": "nix-lefthook-statix-src",
         "nix-lefthook-trailing-whitespace-src": "nix-lefthook-trailing-whitespace-src",
         "nix-lefthook-typos-src": "nix-lefthook-typos-src",
+        "nix-lefthook-unicode-lint-src": "nix-lefthook-unicode-lint-src",
         "nix-lefthook-yamllint-src": "nix-lefthook-yamllint-src",
         "nixpkgs": [
           "nixpkgs-lock",
@@ -911,7 +928,7 @@
         "nix-lefthook-statix-src": "nix-lefthook-statix-src_2",
         "nix-lefthook-trailing-whitespace-src": "nix-lefthook-trailing-whitespace-src_2",
         "nix-lefthook-typos-src": "nix-lefthook-typos-src_2",
-        "nix-lefthook-unicode-lint-src": "nix-lefthook-unicode-lint-src",
+        "nix-lefthook-unicode-lint-src": "nix-lefthook-unicode-lint-src_2",
         "nix-lefthook-yamllint-src": "nix-lefthook-yamllint-src_2",
         "nixpkgs": [
           "set-and-setting",

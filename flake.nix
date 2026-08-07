@@ -92,6 +92,10 @@
       url = "github:pr0d1r2/nix-lefthook-typos";
       flake = false;
     };
+    nix-lefthook-unicode-lint-src = {
+      url = "github:pr0d1r2/nix-lefthook-unicode-lint";
+      flake = false;
+    };
     nix-lefthook-yamllint-src = {
       url = "github:pr0d1r2/nix-lefthook-yamllint";
       flake = false;
@@ -123,6 +127,7 @@
       nix-lefthook-statix-src,
       nix-lefthook-trailing-whitespace-src,
       nix-lefthook-typos-src,
+      nix-lefthook-unicode-lint-src,
       nix-lefthook-yamllint-src,
       ...
     }:
@@ -239,6 +244,9 @@
           })
           (w "lefthook-typos" nix-lefthook-typos-src {
             runtimeInputs = [ pkgs.typos ];
+          })
+          (w "lefthook-unicode-lint" nix-lefthook-unicode-lint-src {
+            runtimeInputs = [ pkgs.gnugrep ];
           })
           (w "lefthook-yamllint" nix-lefthook-yamllint-src {
             runtimeInputs = [ pkgs.yamllint ];
