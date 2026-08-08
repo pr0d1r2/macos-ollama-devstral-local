@@ -1,0 +1,213 @@
+inputs:
+with inputs;
+let
+  supportedSystems = [
+    "aarch64-darwin"
+    "x86_64-darwin"
+    "x86_64-linux"
+    "aarch64-linux"
+  ];
+  forAllSystems =
+    f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
+
+  fragments = [
+    "base"
+    "nix"
+    "ascii"
+    "markdown"
+    "yaml"
+  ];
+
+  wrap =
+    pkgs: name: src: extra:
+    pkgs.writeShellApplication (
+      {
+        inherit name;
+        text = builtins.readFile "${src}/${name}.sh";
+      }
+      // extra
+    );
+
+  lefthookWrappersFor =
+    pkgs:
+    let
+      w = wrap pkgs;
+    in
+    [
+      (w "lefthook-ascii-only" nix-lefthook-ascii-only-src {
+        runtimeInputs = [ pkgs.gnugrep ];
+      })
+      (w "lefthook-deadnix" nix-lefthook-deadnix-src {
+        runtimeInputs = [ pkgs.deadnix ];
+      })
+      (w "lefthook-editorconfig-checker" nix-lefthook-editorconfig-checker-src {
+        runtimeInputs = [ pkgs.editorconfig-checker ];
+      })
+      (w "lefthook-execute-permissions" nix-lefthook-execute-permissions-src {
+        runtimeInputs = [ pkgs.gnugrep ];
+      })
+      (
+        let
+          get-file-size-limit = pkgs.writeShellApplication {
+            name = "get-file-size-limit";
+            text = builtins.readFile "${nix-lefthook-file-size-check-src}/get-file-size-limit.sh";
+            runtimeInputs = [
+              pkgs.gawk
+              pkgs.gnugrep
+            ];
+          };
+        in
+        w "lefthook-file-size-check" nix-lefthook-file-size-check-src {
+          runtimeInputs = [
+            get-file-size-limit
+            pkgs.gawk
+            pkgs.gnugrep
+            pkgs.coreutils
+          ];
+        }
+      )
+      (w "lefthook-git-conflict-markers" nix-lefthook-git-conflict-markers-src {
+        runtimeInputs = [ pkgs.gnugrep ];
+      })
+      (w "lefthook-git-no-local-paths" nix-lefthook-git-no-local-paths-src {
+        runtimeInputs = [ pkgs.gnugrep ];
+      })
+      (w "lefthook-gitleaks" nix-lefthook-gitleaks-src {
+        runtimeInputs = [
+          pkgs.gitleaks
+          pkgs.coreutils
+        ];
+      })
+      (w "lefthook-markdownlint" nix-lefthook-markdownlint-src {
+        runtimeInputs = [ pkgs.markdownlint-cli ];
+      })
+      (w "lefthook-markdownlint-agentic" nix-lefthook-markdownlint-agentic-src {
+        runtimeInputs = [ pkgs.markdownlint-cli ];
+      })
+      (w "lefthook-missing-final-newline" nix-lefthook-missing-final-newline-src { })
+      (w "lefthook-nix-flake-check" nix-lefthook-nix-flake-check-src {
+        runtimeInputs = [ pkgs.nix ];
+      })
+      (pkgs.writeShellApplication {
+        name = "lefthook-nix-no-embedded-shell";
+        text = ''
+          SCANNER="${nix-lefthook-nix-no-embedded-shell-src}/scan-nix-no-embedded-shell.sh"
+        ''
+        + builtins.readFile "${nix-lefthook-nix-no-embedded-shell-src}/lefthook-nix-no-embedded-shell.sh";
+      })
+      (w "lefthook-nixfmt" nix-lefthook-nixfmt-src {
+        runtimeInputs = [ pkgs.nixfmt ];
+      })
+      (w "lefthook-no-shell-functions" nix-lefthook-no-shell-functions-src { })
+      (w "lefthook-shellcheck" nix-lefthook-shellcheck-src {
+        runtimeInputs = [ pkgs.shellcheck ];
+      })
+      (w "lefthook-shfmt" nix-lefthook-shfmt-src {
+        runtimeInputs = [ pkgs.shfmt ];
+      })
+      (w "lefthook-statix" nix-lefthook-statix-src {
+        runtimeInputs = [ pkgs.statix ];
+      })
+      (w "lefthook-trailing-whitespace" nix-lefthook-trailing-whitespace-src {
+        runtimeInputs = [ pkgs.gnugrep ];
+      })
+      (w "lefthook-typos" nix-lefthook-typos-src {
+        runtimeInputs = [ pkgs.typos ];
+      })
+      (w "lefthook-unicode-lint" nix-lefthook-unicode-lint-src {
+        runtimeInputs = [ pkgs.gnugrep ];
+      })
+      (w "lefthook-yamllint" nix-lefthook-yamllint-src {
+        runtimeInputs = [ pkgs.yamllint ];
+      })
+    ];
+in
+{
+  packages = forAllSystems (pkgs: {
+    set = set-and-setting.lib.mkSet { inherit pkgs; };
+    setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
+  });
+
+  devShells = forAllSystems (
+    pkgs:
+    let
+      mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+      sys = pkgs.stdenv.hostPlatform.system;
+    in
+    set-and-setting.lib.mkDevShells {
+      inherit pkgs;
+      basePackages = (lefthookWrappersFor pkgs) ++ [
+        pkgs.coreutils
+        pkgs.git
+        pkgs.nix
+        pkgs.gh
+        pkgs.lefthook
+      ];
+      defaultShellHook = ''
+        ${self.packages.${sys}.setting}/bin/sync-setting .
+        cp -f ${mat.files}/lefthook.yml lefthook.yml
+      '';
+      agenticShellHook = ''
+        ${self.packages.${sys}.setting}/bin/sync-setting .
+        cp -f ${mat.files}/lefthook.yml lefthook.yml
+        ${self.packages.${sys}.set}/bin/sync-set .
+      '';
+    }
+  );
+
+  # #93: fragment-driven checks -- declare fragments once, get all relevant
+  # pinned checks. Fragments match those used in materializationFor.
+  checks = forAllSystems (
+    pkgs:
+    (set-and-setting.lib.checksFor {
+      inherit pkgs fragments;
+      src = ./.;
+    })
+    // {
+      dep-graph = set-and-setting.lib.mkDepGraphCheck {
+        inherit pkgs;
+        projectRoot = ./.;
+      };
+      default = pkgs.runCommand "checks" { } "touch $out";
+    }
+  );
+
+  apps = forAllSystems (
+    pkgs:
+    let
+      mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+    in
+    {
+      confirm = {
+        type = "app";
+        program = "${
+          pkgs.writeShellApplication {
+            name = "confirm";
+            runtimeInputs = (lefthookWrappersFor pkgs) ++ [
+              pkgs.coreutils
+              pkgs.diffutils
+              pkgs.findutils
+              pkgs.gawk
+              pkgs.git
+              pkgs.gnugrep
+            ];
+            runtimeEnv = {
+              FRAGMENTS_DIR = "${set-and-setting}/setting/integrations/lefthook";
+              ASSEMBLE_SCRIPT = "${set-and-setting}/setting/lib/assemble-lefthook.sh";
+              DETECT_SCRIPT = "${set-and-setting}/setting/lib/detect-fragments.sh";
+              SETTING_SRC = "${self.packages.${pkgs.stdenv.hostPlatform.system}.setting}";
+              CONFIRM_SCRIPT = "${set-and-setting}/lib/confirm.sh";
+              CONFIRM_REV = set-and-setting.rev or "unknown";
+              MATERIALIZED_SRC = "${mat.files}";
+            };
+            text = ''
+              $SETTING_SRC/bin/sync-setting .
+              cp -f "$MATERIALIZED_SRC/lefthook.yml" lefthook.yml
+            ''
+            + builtins.readFile "${set-and-setting}/lib/app-confirm.sh";
+          }
+        }/bin/confirm";
+      };
+    }
+  );
+}
