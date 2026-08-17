@@ -12,6 +12,7 @@ let
 
   fragments = [
     "base"
+    "actions"
     "nix"
     "ascii"
     "markdown"
@@ -34,6 +35,9 @@ let
       w = wrap pkgs;
     in
     [
+      (w "lefthook-actionlint" nix-lefthook-actionlint-src {
+        runtimeInputs = [ pkgs.actionlint ];
+      })
       (w "lefthook-ascii-only" nix-lefthook-ascii-only-src {
         runtimeInputs = [ pkgs.gnugrep ];
       })
