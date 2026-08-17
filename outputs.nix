@@ -78,6 +78,9 @@ let
           pkgs.coreutils
         ];
       })
+      (w "lefthook-linter-coverage-full" nix-lefthook-linter-coverage-src {
+        runtimeInputs = [ pkgs.gnugrep ];
+      })
       (w "lefthook-markdownlint" nix-lefthook-markdownlint-src {
         runtimeInputs = [ pkgs.markdownlint-cli ];
       })

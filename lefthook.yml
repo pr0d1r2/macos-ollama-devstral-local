@@ -27,6 +27,8 @@ pre-commit:
 
 pre-push:
   commands:
+    linter-coverage:
+      run: timeout ${LEFTHOOK_LINTER_COVERAGE_FULL_TIMEOUT:-30} lefthook-linter-coverage-full
     nix-flake-check:
       glob: "*.nix"
       run: timeout ${LEFTHOOK_NIX_FLAKE_CHECK_TIMEOUT:-60} nix flake check

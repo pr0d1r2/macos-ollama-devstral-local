@@ -44,6 +44,10 @@
       url = "github:pr0d1r2/nix-lefthook-gitleaks";
       flake = false;
     };
+    nix-lefthook-linter-coverage-src = {
+      url = "github:pr0d1r2/nix-lefthook-linter-coverage-full";
+      flake = false;
+    };
     nix-lefthook-markdownlint-src = {
       url = "github:pr0d1r2/nix-lefthook-markdownlint";
       flake = false;
