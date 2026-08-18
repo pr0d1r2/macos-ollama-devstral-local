@@ -153,10 +153,12 @@ in
       defaultShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
+        sed -i '/^    actionlint:/,/^    [^ ]/ s/^      glob: "\(.*\)"$/      glob:\n        - "\1"/' lefthook.yml
       '';
       agenticShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
+        sed -i '/^    actionlint:/,/^    [^ ]/ s/^      glob: "\(.*\)"$/      glob:\n        - "\1"/' lefthook.yml
         ${self.packages.${sys}.set}/bin/sync-set .
       '';
     }
@@ -211,7 +213,10 @@ in
               $SETTING_SRC/bin/sync-setting .
               cp -f "$MATERIALIZED_SRC/lefthook.yml" lefthook.yml
             ''
-            + builtins.readFile "${set-and-setting}/lib/app-confirm.sh";
+            + builtins.readFile "${set-and-setting}/lib/app-confirm.sh"
+            + ''
+              sed -i '/^    actionlint:/,/^    [^ ]/ s/^      glob: "\(.*\)"$/      glob:\n        - "\1"/' lefthook.yml
+            '';
           }
         }/bin/confirm";
       };
