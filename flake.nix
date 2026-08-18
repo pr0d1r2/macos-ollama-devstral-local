@@ -16,6 +16,10 @@
       url = "github:pr0d1r2/nix-lefthook-ascii-only";
       flake = false;
     };
+    nix-lefthook-actionlint-src = {
+      url = "github:pr0d1r2/nix-lefthook-actionlint";
+      flake = false;
+    };
     nix-lefthook-deadnix-src = {
       url = "github:pr0d1r2/nix-lefthook-deadnix";
       flake = false;
@@ -42,6 +46,10 @@
     };
     nix-lefthook-gitleaks-src = {
       url = "github:pr0d1r2/nix-lefthook-gitleaks";
+      flake = false;
+    };
+    nix-lefthook-linter-coverage-src = {
+      url = "github:pr0d1r2/nix-lefthook-linter-coverage-full";
       flake = false;
     };
     nix-lefthook-markdownlint-src = {

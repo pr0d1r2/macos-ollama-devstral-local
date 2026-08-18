@@ -11,6 +11,10 @@ pre-commit:
     nix-flake-check:
       glob: "*.nix"
       run: timeout ${LEFTHOOK_NIX_FLAKE_CHECK_TIMEOUT:-60} nix flake check
+    actionlint:
+      glob:
+        - ".github/workflows/*.{yml,yaml}"
+      run: timeout ${LEFTHOOK_ACTIONLINT_TIMEOUT:-30} lefthook-actionlint {staged_files}
     unicode-lint:
       glob: "*"
       exclude: '\.(gif|png|jpg|jpeg|ico|webp|bmp|tiff|pdf|woff2?|ttf|eot|mp[34]|wav|ogg|zip|gz|tar|iso)$'
@@ -27,9 +31,15 @@ pre-commit:
 
 pre-push:
   commands:
+    linter-coverage:
+      run: timeout ${LEFTHOOK_LINTER_COVERAGE_FULL_TIMEOUT:-30} lefthook-linter-coverage-full
     nix-flake-check:
       glob: "*.nix"
       run: timeout ${LEFTHOOK_NIX_FLAKE_CHECK_TIMEOUT:-60} nix flake check
+    actionlint:
+      glob:
+        - ".github/workflows/*.{yml,yaml}"
+      run: timeout ${LEFTHOOK_ACTIONLINT_TIMEOUT:-30} lefthook-actionlint {push_files}
     markdownlint:
       glob: "*.md"
       run: timeout ${LEFTHOOK_MARKDOWNLINT_TIMEOUT:-30} lefthook-markdownlint {push_files}

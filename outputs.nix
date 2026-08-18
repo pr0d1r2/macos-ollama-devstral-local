@@ -12,6 +12,7 @@ let
 
   fragments = [
     "base"
+    "actions"
     "nix"
     "ascii"
     "markdown"
@@ -34,6 +35,9 @@ let
       w = wrap pkgs;
     in
     [
+      (w "lefthook-actionlint" nix-lefthook-actionlint-src {
+        runtimeInputs = [ pkgs.actionlint ];
+      })
       (w "lefthook-ascii-only" nix-lefthook-ascii-only-src {
         runtimeInputs = [ pkgs.gnugrep ];
       })
@@ -77,6 +81,9 @@ let
           pkgs.gitleaks
           pkgs.coreutils
         ];
+      })
+      (w "lefthook-linter-coverage-full" nix-lefthook-linter-coverage-src {
+        runtimeInputs = [ pkgs.gnugrep ];
       })
       (w "lefthook-markdownlint" nix-lefthook-markdownlint-src {
         runtimeInputs = [ pkgs.markdownlint-cli ];
@@ -146,10 +153,12 @@ in
       defaultShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
+        sed -i '/^    actionlint:/,/^    [^ ]/ s/^      glob: "\(.*\)"$/      glob:\n        - "\1"/' lefthook.yml
       '';
       agenticShellHook = ''
         ${self.packages.${sys}.setting}/bin/sync-setting .
         cp -f ${mat.files}/lefthook.yml lefthook.yml
+        sed -i '/^    actionlint:/,/^    [^ ]/ s/^      glob: "\(.*\)"$/      glob:\n        - "\1"/' lefthook.yml
         ${self.packages.${sys}.set}/bin/sync-set .
       '';
     }
@@ -159,11 +168,22 @@ in
   # pinned checks. Fragments match those used in materializationFor.
   checks = forAllSystems (
     pkgs:
-    (set-and-setting.lib.checksFor {
+    (builtins.removeAttrs (set-and-setting.lib.checksFor {
       inherit pkgs fragments;
       src = ./.;
-    })
+    }) [ "actionlint" ])
     // {
+      actionlint =
+        pkgs.runCommand "actionlint-check"
+          {
+            nativeBuildInputs = [ pkgs.actionlint ];
+            src = ./.;
+          }
+          ''
+            cd "$src"
+            actionlint .github/workflows/*.yml .github/workflows/*.yaml
+            touch $out
+          '';
       dep-graph = set-and-setting.lib.mkDepGraphCheck {
         inherit pkgs;
         projectRoot = ./.;
@@ -204,7 +224,10 @@ in
               $SETTING_SRC/bin/sync-setting .
               cp -f "$MATERIALIZED_SRC/lefthook.yml" lefthook.yml
             ''
-            + builtins.readFile "${set-and-setting}/lib/app-confirm.sh";
+            + builtins.readFile "${set-and-setting}/lib/app-confirm.sh"
+            + ''
+              sed -i '/^    actionlint:/,/^    [^ ]/ s/^      glob: "\(.*\)"$/      glob:\n        - "\1"/' lefthook.yml
+            '';
           }
         }/bin/confirm";
       };
