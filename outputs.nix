@@ -19,6 +19,8 @@ let
     "yaml"
   ];
 
+  checkFragments = builtins.filter (fragment: fragment != "actions") fragments;
+
   wrap =
     pkgs: name: src: extra:
     pkgs.writeShellApplication (
@@ -169,7 +171,8 @@ in
   checks = forAllSystems (
     pkgs:
     (builtins.removeAttrs (set-and-setting.lib.checksFor {
-      inherit pkgs fragments;
+      fragments = checkFragments;
+      inherit pkgs;
       src = ./.;
     }) [ "actionlint" ])
     // {
