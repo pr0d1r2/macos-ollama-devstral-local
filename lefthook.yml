@@ -12,7 +12,8 @@ pre-commit:
       glob: "*.nix"
       run: timeout ${LEFTHOOK_NIX_FLAKE_CHECK_TIMEOUT:-60} nix flake check
     actionlint:
-      glob: ".github/workflows/*.{yml,yaml}"
+      glob:
+        - ".github/workflows/*.{yml,yaml}"
       run: timeout ${LEFTHOOK_ACTIONLINT_TIMEOUT:-30} lefthook-actionlint {staged_files}
     unicode-lint:
       glob: "*"
@@ -36,7 +37,8 @@ pre-push:
       glob: "*.nix"
       run: timeout ${LEFTHOOK_NIX_FLAKE_CHECK_TIMEOUT:-60} nix flake check
     actionlint:
-      glob: ".github/workflows/*.{yml,yaml}"
+      glob:
+        - ".github/workflows/*.{yml,yaml}"
       run: timeout ${LEFTHOOK_ACTIONLINT_TIMEOUT:-30} lefthook-actionlint {push_files}
     markdownlint:
       glob: "*.md"
