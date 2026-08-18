@@ -168,11 +168,19 @@ in
   # pinned checks. Fragments match those used in materializationFor.
   checks = forAllSystems (
     pkgs:
-    (set-and-setting.lib.checksFor {
+    (builtins.removeAttrs (set-and-setting.lib.checksFor {
       inherit pkgs fragments;
       src = ./.;
-    })
+    }) [ "actionlint" ])
     // {
+      actionlint = pkgs.runCommand "actionlint-check" {
+        nativeBuildInputs = [ pkgs.actionlint ];
+        src = ./.;
+      } ''
+        cd "$src"
+        actionlint .github/workflows/*.yml .github/workflows/*.yaml
+        touch $out
+      '';
       dep-graph = set-and-setting.lib.mkDepGraphCheck {
         inherit pkgs;
         projectRoot = ./.;
