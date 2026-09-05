@@ -1,5 +1,11 @@
 # macos-ollama-devstral-local
 
+<!-- hallucinogen:autonomy-disclaimer start -->
+> Read [LLM-DISCLAIMER](docs/LLM-DISCLAIMER.md) first — this repository is
+> tended by an autonomous loop, and that file says what the loop may do here,
+> what it may not, and what to check before trusting anything in this tree.
+<!-- hallucinogen:autonomy-disclaimer end -->
+
 [![CI](https://github.com/pr0d1r2/macos-ollama-devstral-local/actions/workflows/ci.yml/badge.svg)](https://github.com/pr0d1r2/macos-ollama-devstral-local/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![NixOS 25.11](https://img.shields.io/badge/NixOS-25.11-blue.svg?logo=nixos)](https://nixos.org)
