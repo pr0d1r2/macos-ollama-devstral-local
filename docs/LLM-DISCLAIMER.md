@@ -26,11 +26,12 @@ inferred.
 
 ## The audit trail is the commit log
 
-The loop commits in small, logical pieces rather than one squashed drop, and
-the commit message carries the reasoning: what was wrong, why this fix and not
-the obvious one, what was rejected and on what evidence. The log is therefore
-the review record, readable after the fact by someone who was not present when
-the work happened.
+When the loop makes multiple commits, it aims for small, logical pieces rather
+than one squashed drop, and the commit message should carry the reasoning: what
+was wrong, why this fix and not the obvious one, what was rejected and on what
+evidence. The log is therefore the review record when those practices are
+followed, readable after the fact by someone who was not present when the work
+happened.
 
 Read it that way:
 
@@ -54,10 +55,9 @@ missed.
 
 ## The guardrails are this repository's own
 
-This repository is gated by `lefthook.yml`. Before a machine-authored branch is
-pushed, it is run against that gate — the same checks a human gets on
-`git commit`, in the same environment continuous integration uses. A change the
-gate refuses is not pushed and no pull request is opened for it.
+This repository is gated by `lefthook.yml`. The configured `pre-commit` hook
+runs the flake checks, and continuous integration runs the repository's merge
+gate. A change refused by either gate is not eligible to merge.
 
 Run it yourself:
 
