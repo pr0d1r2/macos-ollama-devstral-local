@@ -55,9 +55,9 @@ missed.
 
 ## The guardrails are this repository's own
 
-This repository is gated by `lefthook.yml`. The configured `pre-commit` hook
-runs the flake checks, and continuous integration runs the repository's merge
-gate. A change refused by either gate is not eligible to merge.
+The repository's flake materializes `lefthook.yml` for local development, and
+the workflow invokes the repository's merge gate in continuous integration.
+A change refused by either gate is not eligible to merge.
 
 Run it yourself:
 
