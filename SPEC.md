@@ -108,7 +108,7 @@ T12|x|start.sh — orchestrate T2-T11, print `<mac>.local` endpoint|V1,V5,V15,I.
 T13|x|stop.sh — launchctl unload, safe when idle|V6,V16,I.stop
 T14|x|restart.sh — unload then load|V7,I.restart
 T15|x|uninstall.sh — stop first, rm plist, unset, optional rm model|V8,I.uninstall
-T16|.|ollama helpers — get-model/status/models/test/prompt (sh, lift sibling)|V23,I.helpers
+T16|x|ollama helpers — get-model/status/models/test/prompt (sh, lift sibling)|V23,I.helpers
 T17|.|RAM tier → quant + ctx + num_parallel map; 16GB marginal|V10,V13
 T18|.|exec-bit mitigation — self-chmod / sh start.sh fallback|V22,C7
 T19|.|README — usage: download zip, unpack, run start.sh|C7,I.readme
