@@ -17,7 +17,7 @@ grep -F '<string>serve</string>' "$plist" >/dev/null
 grep -F '<string>0.0.0.0:11434</string>' "$plist" >/dev/null
 grep -F '<string>-1</string>' "$plist" >/dev/null
 grep -F '<string>8192</string>' "$plist" >/dev/null
-grep -F '<string>2</string>' "$plist" >/dev/null
+grep -F '<string>1</string>' "$plist" >/dev/null
 grep -F '<key>RunAtLoad</key>' "$plist" >/dev/null
 grep -F '<key>KeepAlive</key>' "$plist" >/dev/null
 grep -F '<key>StandardOutPath</key>' "$plist" >/dev/null
