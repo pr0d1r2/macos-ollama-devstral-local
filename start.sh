@@ -1,6 +1,10 @@
 #!/bin/sh
 set -eu
 
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+# shellcheck disable=SC1091
+. "$script_dir/config.sh"
+
 architecture=$(uname -m)
 if [ "$architecture" != arm64 ]; then
   echo "Unsupported architecture: $architecture (this script requires arm64)." >&2
@@ -52,7 +56,6 @@ else
 fi
 export OLLAMA_CLI
 
-script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 plist_path=$(HOME=${HOME:?} OLLAMA_CLI="$OLLAMA_CLI" \
   sh "$script_dir/scripts/gen-plist.sh")
 
