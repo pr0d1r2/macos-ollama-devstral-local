@@ -103,7 +103,7 @@ T7|x|install + launchctl load plist|V3,V5,I.service
 T8|x|export OLLAMA_HOST in scripts for own CLI calls|C16,V20
 T9|x|devstral pull, skip if present|V9,C8
 T10|x|warm/preload model on start (priming generate)|V18,C15
-T11|.|healthcheck helper — curl /api/tags|V15,I.api
+T11|x|healthcheck helper — curl /api/tags|V15,I.api
 T12|.|start.sh — orchestrate T2-T11, print `<mac>.local` endpoint|V1,V5,V15,I.start
 T13|.|stop.sh — launchctl unload, safe when idle|V6,V16,I.stop
 T14|.|restart.sh — unload then load|V7,I.restart
