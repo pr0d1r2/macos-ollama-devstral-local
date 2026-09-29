@@ -15,7 +15,11 @@ cat >"$mock_bin/ollama" <<'EOF'
 #!/bin/sh
 if [ "${1:-}" = list ]; then
   if [ "${MOCK_MODEL_PRESENT:-0}" = 1 ]; then
-    printf '%s\n' 'NAME ID SIZE MODIFIED' 'devstral:latest abc 1 GB now'
+    if [ "${MODEL:-}" = 'foo.bar' ]; then
+      printf '%s\n' 'NAME ID SIZE MODIFIED' 'fooXbar abc 1 GB now'
+    else
+      printf '%s\n' 'NAME ID SIZE MODIFIED' 'devstral:latest abc 1 GB now'
+    fi
   else
     printf '%s\n' 'NAME ID SIZE MODIFIED'
   fi
@@ -71,7 +75,11 @@ cat >"$app_dir/Contents/Resources/ollama" <<'EOF'
 #!/bin/sh
 if [ "${1:-}" = list ]; then
   if [ "${MOCK_MODEL_PRESENT:-0}" = 1 ]; then
-    printf '%s\n' 'NAME ID SIZE MODIFIED' 'devstral:latest abc 1 GB now'
+    if [ "${MODEL:-}" = 'foo.bar' ]; then
+      printf '%s\n' 'NAME ID SIZE MODIFIED' 'fooXbar abc 1 GB now'
+    else
+      printf '%s\n' 'NAME ID SIZE MODIFIED' 'devstral:latest abc 1 GB now'
+    fi
   else
     printf '%s\n' 'NAME ID SIZE MODIFIED'
   fi
@@ -104,6 +112,13 @@ PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_LAUNCHCTL_LOG="$launchctl_log"
 grep -E '^unload ' "$launchctl_log" >/dev/null
 grep -E '^load ' "$launchctl_log" >/dev/null
 [ "$(wc -l <"$pull_log")" -eq 1 ]
+
+custom_pull_log="$mock_bin/custom-pull.log"
+PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MODEL='foo.bar' MOCK_LAUNCHCTL_LOG="$launchctl_log" \
+  MOCK_PULL_LOG="$custom_pull_log" MOCK_MODEL_PRESENT=1 HOME="$mock_bin/home" \
+  LAUNCH_AGENTS_DIR="$mock_bin/agents" MOCK_UNAME=arm64 \
+  sh "$repo_dir/start.sh"
+[ "$(wc -l <"$custom_pull_log")" -eq 1 ]
 
 grep -F 'delete login item "Ollama"' "$mock_bin/osascript.log" >/dev/null 2>&1 || {
   echo "start.sh did not attempt to disable Ollama login item" >&2
