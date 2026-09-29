@@ -27,10 +27,12 @@ for expected in \
   '64 q8_0 32768 4' \
   '96 q8_0 32768 6' \
   '128 q8_0 65536 8'; do
-  set -- $expected
-  TIER=$1 QUANT='' CTX='' NUM_PARALLEL='' \
+  IFS=' ' read -r tier quant ctx num_parallel <<EOF
+$expected
+EOF
+  TIER=$tier QUANT='' CTX='' NUM_PARALLEL='' \
     sh -c '. "$1"; [ "$TIER" = "$2" ]; [ "$QUANT" = "$3" ]; [ "$CTX" = "$4" ]; [ "$NUM_PARALLEL" = "$5" ]' \
-    sh "$repo_dir/config.sh" "$1" "$2" "$3" "$4"
+    sh "$repo_dir/config.sh" "$tier" "$quant" "$ctx" "$num_parallel"
 done
 
 MODEL=custom PORT=12345 OLLAMA_HOST='' TIER=64 QUANT=q4_0 CTX=2048 KEEP_ALIVE=30 NUM_PARALLEL=4 \
