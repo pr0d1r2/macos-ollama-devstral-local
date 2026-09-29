@@ -57,6 +57,15 @@ fi
 EOF
 chmod +x "$mock_bin/launchctl"
 
+cat >"$mock_bin/curl" <<'EOF'
+#!/bin/sh
+if [ -n "${MOCK_CURL_LOG:-}" ]; then
+  printf '%s\n' "$*" >>"$MOCK_CURL_LOG"
+fi
+exit "${MOCK_CURL_EXIT:-0}"
+EOF
+chmod +x "$mock_bin/curl"
+
 cat >"$mock_bin/sleep" <<'EOF'
 #!/bin/sh
 mkdir -p "${MOCK_APP_ON_SLEEP:?}/Contents/Resources"
@@ -92,12 +101,16 @@ chmod +x "$app_dir/Contents/Resources/ollama"
 
 launchctl_log="$mock_bin/launchctl.log"
 pull_log="$mock_bin/pull.log"
+curl_log="$mock_bin/curl.log"
 
 PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_OSASCRIPT_LOG="$mock_bin/osascript.log" \
   MOCK_LAUNCHCTL_LOG="$launchctl_log" HOME="$mock_bin/home" LAUNCH_AGENTS_DIR="$mock_bin/agents" \
-  MOCK_UNAME=arm64 MOCK_PULL_LOG="$pull_log" sh "$repo_dir/start.sh"
+  MOCK_UNAME=arm64 MOCK_PULL_LOG="$pull_log" MOCK_CURL_LOG="$curl_log" sh "$repo_dir/start.sh"
 
 grep -F 'pull devstral' "$pull_log" >/dev/null
+grep -F 'api/generate' "$curl_log" >/dev/null
+grep -F 'stream":false' "$curl_log" >/dev/null
+grep -F 'keep_alive":-1' "$curl_log" >/dev/null
 
 grep -E '^unload .*/com\.pr0d1r2\.ollama-devstral-local\.plist$' "$launchctl_log" >/dev/null
 grep -E '^load .*/com\.pr0d1r2\.ollama-devstral-local\.plist$' "$launchctl_log" >/dev/null
@@ -107,16 +120,23 @@ plist=$(sed -n 's/^load //p' "$launchctl_log")
 : >"$launchctl_log"
 PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_LAUNCHCTL_LOG="$launchctl_log" \
   MOCK_PULL_LOG="$pull_log" MOCK_MODEL_PRESENT=1 HOME="$mock_bin/home" \
-  LAUNCH_AGENTS_DIR="$mock_bin/agents" MOCK_UNAME=arm64 \
+  LAUNCH_AGENTS_DIR="$mock_bin/agents" MOCK_UNAME=arm64 MOCK_CURL_LOG="$curl_log" \
   sh "$repo_dir/start.sh"
 grep -E '^unload ' "$launchctl_log" >/dev/null
 grep -E '^load ' "$launchctl_log" >/dev/null
 [ "$(wc -l <"$pull_log")" -eq 1 ]
 
+: >"$curl_log"
+PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" KEEP_ALIVE=30 MOCK_MODEL_PRESENT=1 \
+  HOME="$mock_bin/home" LAUNCH_AGENTS_DIR="$mock_bin/agents" \
+  MOCK_LAUNCHCTL_LOG="$launchctl_log" MOCK_CURL_LOG="$curl_log" MOCK_UNAME=arm64 \
+  sh "$repo_dir/start.sh"
+grep -F 'keep_alive":30' "$curl_log" >/dev/null
+
 custom_pull_log="$mock_bin/custom-pull.log"
 PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MODEL='foo.bar' MOCK_LAUNCHCTL_LOG="$launchctl_log" \
   MOCK_PULL_LOG="$custom_pull_log" MOCK_MODEL_PRESENT=1 HOME="$mock_bin/home" \
-  LAUNCH_AGENTS_DIR="$mock_bin/agents" MOCK_UNAME=arm64 \
+  LAUNCH_AGENTS_DIR="$mock_bin/agents" MOCK_UNAME=arm64 MOCK_CURL_LOG="$curl_log" \
   sh "$repo_dir/start.sh"
 [ "$(wc -l <"$custom_pull_log")" -eq 1 ]
 
