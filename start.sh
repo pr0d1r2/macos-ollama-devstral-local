@@ -51,3 +51,13 @@ else
   echo "Manual fallback: System Settings → General → Login Items → remove or disable Ollama."
 fi
 export OLLAMA_CLI
+
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+plist_path=$(HOME=${HOME:?} OLLAMA_CLI="$OLLAMA_CLI" \
+  sh "$script_dir/scripts/gen-plist.sh")
+
+# Reload the managed LaunchAgent so rerunning start.sh replaces the existing
+# service cleanly instead of creating a competing instance.
+launchctl unload "$plist_path" >/dev/null 2>&1 || true
+launchctl load "$plist_path"
+echo "Loaded Ollama LaunchAgent: $plist_path"
