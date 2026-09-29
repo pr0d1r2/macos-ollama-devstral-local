@@ -82,7 +82,7 @@ fi
 echo "Warming model: $MODEL"
 if ! curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
   -H 'Content-Type: application/json' \
-  -d '{"model":"'"$MODEL"'","prompt":"","stream":false,"keep_alive":-1}' \
+  -d '{"model":"'"$MODEL"'","prompt":"","stream":false,"keep_alive":'"$KEEP_ALIVE"'}' \
   "http://127.0.0.1:$PORT/api/generate" >/dev/null; then
   echo "Failed to warm model through Ollama at http://127.0.0.1:$PORT." >&2
   exit 1

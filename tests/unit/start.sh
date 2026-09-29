@@ -126,6 +126,13 @@ grep -E '^unload ' "$launchctl_log" >/dev/null
 grep -E '^load ' "$launchctl_log" >/dev/null
 [ "$(wc -l <"$pull_log")" -eq 1 ]
 
+: >"$curl_log"
+PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" KEEP_ALIVE=30 MOCK_MODEL_PRESENT=1 \
+  HOME="$mock_bin/home" LAUNCH_AGENTS_DIR="$mock_bin/agents" \
+  MOCK_LAUNCHCTL_LOG="$launchctl_log" MOCK_CURL_LOG="$curl_log" MOCK_UNAME=arm64 \
+  sh "$repo_dir/start.sh"
+grep -F 'keep_alive":30' "$curl_log" >/dev/null
+
 custom_pull_log="$mock_bin/custom-pull.log"
 PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MODEL='foo.bar' MOCK_LAUNCHCTL_LOG="$launchctl_log" \
   MOCK_PULL_LOG="$custom_pull_log" MOCK_MODEL_PRESENT=1 HOME="$mock_bin/home" \
