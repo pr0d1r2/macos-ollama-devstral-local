@@ -2,6 +2,7 @@
 set -eu
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
+. "$script_dir/../config.sh"
 escaped_model=$("$script_dir/ollama-helper.sh" escape "$MODEL")
 escaped_prompt=$("$script_dir/ollama-helper.sh" escape "${1:-Reply with OK.}")
 payload='{"model":"'"$escaped_model"'","prompt":"'"$escaped_prompt"'","stream":false}'

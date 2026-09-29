@@ -2,6 +2,7 @@
 set -eu
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
+. "$script_dir/../config.sh"
 if [ "$#" -gt 0 ]; then prompt=$*; else prompt=$(cat); fi
 escaped_model=$("$script_dir/ollama-helper.sh" escape "$MODEL")
 escaped_prompt=$("$script_dir/ollama-helper.sh" escape "$prompt")

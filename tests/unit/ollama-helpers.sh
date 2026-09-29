@@ -15,18 +15,18 @@ esac
 EOF
 chmod +x "$mock_bin/curl"
 log=$mock_bin/curl.log
-PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" MODEL=devstral OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/get-model.sh" custom >"$mock_bin/get-model.out"
+PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/get-model.sh" custom >"$mock_bin/get-model.out"
 grep -F 'http://192.0.2.10:11434/api/show' "$log" >/dev/null
 grep -F '"name":"custom"' "$log" >/dev/null
-PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" MODEL=devstral OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/status.sh" >"$mock_bin/status.out"
+PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/status.sh" >"$mock_bin/status.out"
 grep -F '/api/ps' "$log" >/dev/null
-PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" MODEL=devstral OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/models.sh" >"$mock_bin/models.out"
+PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/models.sh" >"$mock_bin/models.out"
 grep -F '/api/tags' "$log" >/dev/null
-PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" MODEL=devstral OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/test.sh" 'say hello' >"$mock_bin/test.out" 2>"$mock_bin/test.err"
+PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/test.sh" 'say hello' >"$mock_bin/test.out" 2>"$mock_bin/test.err"
 grep -F '"stream":false' "$log" >/dev/null
 grep -F 'total_duration=123' "$mock_bin/test.err" >/dev/null
 grep -F 'eval_count=7' "$mock_bin/test.err" >/dev/null
-PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" MODEL=devstral OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/prompt.sh" 'say hello' >"$mock_bin/prompt.out" 2>"$mock_bin/prompt.err"
+PATH="$mock_bin:$PATH" MOCK_CURL_LOG="$log" OLLAMA_HOST=192.0.2.10:11434 sh "$repo_dir/scripts/prompt.sh" 'say hello' >"$mock_bin/prompt.out" 2>"$mock_bin/prompt.err"
 grep -Fx 'OK' "$mock_bin/prompt.out" >/dev/null
 grep -F 'total_duration=123' "$mock_bin/prompt.err" >/dev/null
 echo "ollama helper tests passed"
