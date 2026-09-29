@@ -95,7 +95,7 @@ Arch = B: own LaunchAgent runs headless `ollama serve`. Ollama.app only installs
 id|status|task|cites
 T1|x|config.sh — model, port, quant, ctx, keep_alive(-1), num_parallel, tier|V12,C15,I.config
 T2|x|arch guard — uname -m = arm64 else error|V21,C1
-T3|.|detect /Applications/Ollama.app, resolve CLI path|C2,V17,I.start
+T3|x|detect /Applications/Ollama.app, resolve CLI path|C2,V17,I.start
 T4|.|app missing → open ollama.com/download, print steps, poll until installed|C13,V2,I.dl
 T5|.|disable Ollama.app menubar autostart (best-effort + doc manual)|C4,V4
 T6|.|LaunchAgent plist gen — ollama serve, env(host/keep_alive/ctx/num_parallel), RunAtLoad, KeepAlive, log paths|C3,V1,V3,V18,V19,I.service
