@@ -43,15 +43,11 @@ fi
 # process (and potentially its own server) at login.  Removing the login item
 # is best-effort: System Events may require Automation permission, and some
 # app versions do not expose the item under this name.
-disable_ollama_autostart() {
-  if command -v osascript >/dev/null 2>&1 &&
-    osascript -e 'tell application "System Events" to delete login item "Ollama"' >/dev/null 2>&1; then
-    echo "Disabled Ollama.app menubar login item."
-  else
-    echo "Could not automatically disable Ollama.app menubar autostart."
-    echo "Manual fallback: System Settings → General → Login Items → remove or disable Ollama."
-  fi
-}
-
-disable_ollama_autostart
+if command -v osascript >/dev/null 2>&1 &&
+  osascript -e 'tell application "System Events" to delete login item "Ollama"' >/dev/null 2>&1; then
+  echo "Disabled Ollama.app menubar login item."
+else
+  echo "Could not automatically disable Ollama.app menubar autostart."
+  echo "Manual fallback: System Settings → General → Login Items → remove or disable Ollama."
+fi
 export OLLAMA_CLI

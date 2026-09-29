@@ -31,6 +31,7 @@ so the Ollama menubar app does not start a competing server. If macOS denies
 the automation request, open System Settings → General → Login Items and
 remove or disable Ollama manually. The managed headless service remains the
 process that owns port 11434.
+
 - Per-RAM-tier tuning (16, 24, 32, 48, 64, 96, 128 GB) documented for
   quantization and context length.
 - Agent gateways (`agent-opencode.sh`, `agent-pi.sh`, `agent-codex.sh`)
