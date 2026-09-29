@@ -66,6 +66,18 @@ exit "${MOCK_CURL_EXIT:-0}"
 EOF
 chmod +x "$mock_bin/curl"
 
+cat >"$mock_bin/ipconfig" <<'EOF'
+#!/bin/sh
+printf '%s\n' '192.0.2.10'
+EOF
+chmod +x "$mock_bin/ipconfig"
+
+cat >"$mock_bin/scutil" <<'EOF'
+#!/bin/sh
+printf '%s\n' 'test-mac'
+EOF
+chmod +x "$mock_bin/scutil"
+
 cat >"$mock_bin/sleep" <<'EOF'
 #!/bin/sh
 mkdir -p "${MOCK_APP_ON_SLEEP:?}/Contents/Resources"
@@ -105,8 +117,10 @@ curl_log="$mock_bin/curl.log"
 
 PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_OSASCRIPT_LOG="$mock_bin/osascript.log" \
   MOCK_LAUNCHCTL_LOG="$launchctl_log" HOME="$mock_bin/home" LAUNCH_AGENTS_DIR="$mock_bin/agents" \
-  MOCK_UNAME=arm64 MOCK_PULL_LOG="$pull_log" MOCK_CURL_LOG="$curl_log" sh "$repo_dir/start.sh"
+  MOCK_UNAME=arm64 MOCK_PULL_LOG="$pull_log" MOCK_CURL_LOG="$curl_log" sh "$repo_dir/start.sh" >"$mock_bin/start-output"
 
+grep -F 'http://192.0.2.10:11434/api/tags' "$curl_log" >/dev/null
+grep -F 'Ollama endpoint: http://test-mac.local:11434' "$mock_bin/start-output" >/dev/null
 grep -F 'pull devstral' "$pull_log" >/dev/null
 grep -F 'api/generate' "$curl_log" >/dev/null
 grep -F 'stream":false' "$curl_log" >/dev/null

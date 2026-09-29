@@ -88,3 +88,13 @@ if ! curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
   exit 1
 fi
 echo "Model warm: $MODEL"
+
+# Verify through a LAN interface so a localhost-only listener cannot pass.
+sh "$script_dir/scripts/healthcheck.sh"
+
+mac_name=$(scutil --get LocalHostName 2>/dev/null || hostname -s)
+if [ -z "$mac_name" ]; then
+  echo "Could not determine this Mac's Bonjour hostname." >&2
+  exit 1
+fi
+echo "Ollama endpoint: http://${mac_name}.local:$PORT"
