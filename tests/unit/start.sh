@@ -13,6 +13,15 @@ chmod +x "$mock_bin/uname"
 
 cat >"$mock_bin/ollama" <<'EOF'
 #!/bin/sh
+if [ "${1:-}" = list ]; then
+  if [ "${MOCK_MODEL_PRESENT:-0}" = 1 ]; then
+    printf '%s\n' 'NAME ID SIZE MODIFIED' 'devstral:latest abc 1 GB now'
+  else
+    printf '%s\n' 'NAME ID SIZE MODIFIED'
+  fi
+elif [ "${1:-}" = pull ]; then
+  printf 'pull %s\n' "${2:-}" >>"${MOCK_PULL_LOG:-/dev/null}"
+fi
 exit 0
 EOF
 chmod +x "$mock_bin/ollama"
@@ -60,15 +69,27 @@ trap 'rm -rf "$mock_bin" "$app_dir"' EXIT HUP INT TERM
 mkdir -p "$app_dir/Contents/Resources"
 cat >"$app_dir/Contents/Resources/ollama" <<'EOF'
 #!/bin/sh
+if [ "${1:-}" = list ]; then
+  if [ "${MOCK_MODEL_PRESENT:-0}" = 1 ]; then
+    printf '%s\n' 'NAME ID SIZE MODIFIED' 'devstral:latest abc 1 GB now'
+  else
+    printf '%s\n' 'NAME ID SIZE MODIFIED'
+  fi
+elif [ "${1:-}" = pull ]; then
+  printf 'pull %s\n' "${2:-}" >>"${MOCK_PULL_LOG:-/dev/null}"
+fi
 exit 0
 EOF
 chmod +x "$app_dir/Contents/Resources/ollama"
 
 launchctl_log="$mock_bin/launchctl.log"
+pull_log="$mock_bin/pull.log"
 
 PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_OSASCRIPT_LOG="$mock_bin/osascript.log" \
   MOCK_LAUNCHCTL_LOG="$launchctl_log" HOME="$mock_bin/home" LAUNCH_AGENTS_DIR="$mock_bin/agents" \
-  MOCK_UNAME=arm64 sh "$repo_dir/start.sh"
+  MOCK_UNAME=arm64 MOCK_PULL_LOG="$pull_log" sh "$repo_dir/start.sh"
+
+grep -F 'pull devstral' "$pull_log" >/dev/null
 
 grep -E '^unload .*/com\.pr0d1r2\.ollama-devstral-local\.plist$' "$launchctl_log" >/dev/null
 grep -E '^load .*/com\.pr0d1r2\.ollama-devstral-local\.plist$' "$launchctl_log" >/dev/null
@@ -77,10 +98,12 @@ plist=$(sed -n 's/^load //p' "$launchctl_log")
 
 : >"$launchctl_log"
 PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_LAUNCHCTL_LOG="$launchctl_log" \
-  HOME="$mock_bin/home" LAUNCH_AGENTS_DIR="$mock_bin/agents" MOCK_UNAME=arm64 \
+  MOCK_PULL_LOG="$pull_log" MOCK_MODEL_PRESENT=1 HOME="$mock_bin/home" \
+  LAUNCH_AGENTS_DIR="$mock_bin/agents" MOCK_UNAME=arm64 \
   sh "$repo_dir/start.sh"
 grep -E '^unload ' "$launchctl_log" >/dev/null
 grep -E '^load ' "$launchctl_log" >/dev/null
+[ "$(wc -l <"$pull_log")" -eq 1 ]
 
 grep -F 'delete login item "Ollama"' "$mock_bin/osascript.log" >/dev/null 2>&1 || {
   echo "start.sh did not attempt to disable Ollama login item" >&2

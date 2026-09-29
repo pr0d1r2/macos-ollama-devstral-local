@@ -101,7 +101,7 @@ T5|x|disable Ollama.app menubar autostart (best-effort + doc manual)|C4,V4
 T6|x|LaunchAgent plist gen — ollama serve, env(host/keep_alive/ctx/num_parallel), RunAtLoad, KeepAlive, log paths|C3,V1,V3,V18,V19,I.service
 T7|x|install + launchctl load plist|V3,V5,I.service
 T8|x|export OLLAMA_HOST in scripts for own CLI calls|C16,V20
-T9|.|devstral pull, skip if present|V9,C8
+T9|x|devstral pull, skip if present|V9,C8
 T10|.|warm/preload model on start (priming generate)|V18,C15
 T11|.|healthcheck helper — curl /api/tags|V15,I.api
 T12|.|start.sh — orchestrate T2-T11, print `<mac>.local` endpoint|V1,V5,V15,I.start
