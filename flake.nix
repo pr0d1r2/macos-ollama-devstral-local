@@ -29,6 +29,7 @@
         "base"
         "actions"
         "nix"
+        "shell"
         "ascii"
         "markdown"
         "yaml"

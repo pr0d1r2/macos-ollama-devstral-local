@@ -93,7 +93,7 @@ Arch = B: own LaunchAgent runs headless `ollama serve`. Ollama.app only installs
 ## §T TASKS
 
 id|status|task|cites
-T1|.|config.sh — model, port, quant, ctx, keep_alive(-1), num_parallel, tier|V12,C15,I.config
+T1|x|config.sh — model, port, quant, ctx, keep_alive(-1), num_parallel, tier|V12,C15,I.config
 T2|.|arch guard — uname -m = arm64 else error|V21,C1
 T3|.|detect /Applications/Ollama.app, resolve CLI path|C2,V17,I.start
 T4|.|app missing → open ollama.com/download, print steps, poll until installed|C13,V2,I.dl
@@ -147,3 +147,4 @@ B11|2026-08-18|The pinned setting materializer regenerated the actionlint workfl
 B12|2026-08-18|Pinned `set-and-setting` actionlint check passed its workflow regex as a scalar to a Nix source-filter API that needs a list; flake eval failed|Run pinned `pkgs.actionlint` directly while the upstream helper is incompatible
 B13|2026-08-18|`outputs.nix` used a layout rejected by the pinned nixfmt check|Apply the pinned nixfmt layout to the actionlint check expression
 B14|2026-09-27|Committed bootstrap `lefthook.yml` + local `outputs.nix` left guard-class contradictory: every push was refused by the stale vendored hooks and no pin bump could land|Use `mkConsumerFlake`, gitignore the materialized `lefthook.yml`, call guardrails@main
+B15|2026-09-29|`guardrails / check` reported lefthook fidelity drift because the flake omitted the required `shell` fragment while the standard fidelity oracle expected its shell hooks|Declare the `shell` fragment so generated lefthook hooks match the standard fragment set
