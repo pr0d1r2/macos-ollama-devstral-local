@@ -64,3 +64,14 @@ plist_path=$(HOME=${HOME:?} OLLAMA_CLI="$OLLAMA_CLI" \
 launchctl unload "$plist_path" >/dev/null 2>&1 || true
 launchctl load "$plist_path"
 echo "Loaded Ollama LaunchAgent: $plist_path"
+
+# Pull the configured model only when it is not already installed.  The
+# trailing :latest tag is Ollama's display convention, while MODEL remains
+# the stable identifier used by the rest of the scripts.
+if "$OLLAMA_CLI" list 2>/dev/null |
+  awk -v model="$MODEL" '$1 == model || $1 == model ":latest" { found = 1 } END { exit !found }'; then
+  echo "Model already present: $MODEL"
+else
+  echo "Pulling model: $MODEL"
+  "$OLLAMA_CLI" pull "$MODEL"
+fi
