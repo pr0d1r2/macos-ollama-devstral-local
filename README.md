@@ -25,6 +25,12 @@ unpack, run, and you get a shared LAN inference endpoint in minutes.
 - One `start.sh` that checks for `/Applications/Ollama.app`, guides
   install if missing, pulls Devstral 24B, and serves it on the LAN.
 - `stop.sh` / `restart.sh` / `uninstall.sh` for lifecycle control.
+
+On startup, `start.sh` best-effort removes Ollama from the macOS login items
+so the Ollama menubar app does not start a competing server. If macOS denies
+the automation request, open System Settings → General → Login Items and
+remove or disable Ollama manually. The managed headless service remains the
+process that owns port 11434.
 - Per-RAM-tier tuning (16, 24, 32, 48, 64, 96, 128 GB) documented for
   quantization and context length.
 - Agent gateways (`agent-opencode.sh`, `agent-pi.sh`, `agent-codex.sh`)

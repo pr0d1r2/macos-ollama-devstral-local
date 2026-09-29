@@ -25,6 +25,17 @@ fi
 EOF
 chmod +x "$mock_bin/open"
 
+cat >"$mock_bin/osascript" <<'EOF'
+#!/bin/sh
+if [ -n "${MOCK_OSASCRIPT_LOG:-}" ]; then
+  printf '%s\n' "$*" >"$MOCK_OSASCRIPT_LOG"
+fi
+if [ "${MOCK_OSASCRIPT_FAIL:-0}" = 1 ]; then
+  exit 1
+fi
+EOF
+chmod +x "$mock_bin/osascript"
+
 cat >"$mock_bin/sleep" <<'EOF'
 #!/bin/sh
 mkdir -p "${MOCK_APP_ON_SLEEP:?}/Contents/Resources"
@@ -45,7 +56,18 @@ exit 0
 EOF
 chmod +x "$app_dir/Contents/Resources/ollama"
 
-PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_UNAME=arm64 sh "$repo_dir/start.sh"
+PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_OSASCRIPT_LOG="$mock_bin/osascript.log" \
+  MOCK_UNAME=arm64 sh "$repo_dir/start.sh"
+
+grep -F 'delete login item "Ollama"' "$mock_bin/osascript.log" >/dev/null 2>&1 || {
+  echo "start.sh did not attempt to disable Ollama login item" >&2
+  exit 1
+}
+
+PATH="$mock_bin:$PATH" OLLAMA_APP="$app_dir" MOCK_OSASCRIPT_FAIL=1 MOCK_UNAME=arm64 \
+  sh "$repo_dir/start.sh" >"$mock_bin/autostart-fallback-output"
+grep -F 'Could not automatically disable Ollama.app menubar autostart' "$mock_bin/autostart-fallback-output" >/dev/null
+grep -F 'System Settings' "$mock_bin/autostart-fallback-output" >/dev/null
 
 if PATH="$mock_bin:$PATH" MOCK_UNAME=x86_64 sh "$repo_dir/start.sh" 2>"$mock_bin/error"; then
   echo "start.sh accepted a non-arm64 architecture" >&2
