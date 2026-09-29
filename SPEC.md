@@ -110,7 +110,7 @@ T14|x|restart.sh — unload then load|V7,I.restart
 T15|x|uninstall.sh — stop first, rm plist, unset, optional rm model|V8,I.uninstall
 T16|x|ollama helpers — get-model/status/models/test/prompt (sh, lift sibling)|V23,I.helpers
 T17|x|RAM tier → quant + ctx + num_parallel map; 16GB marginal|V10,V13
-T18|.|exec-bit mitigation — self-chmod / sh start.sh fallback|V22,C7
+T18|x|exec-bit mitigation — self-chmod / sh start.sh fallback|V22,C7
 T19|.|README — usage: download zip, unpack, run start.sh|C7,I.readme
 T20|.|README — per-tier table 16..128 GB (quant, ctx); 16GB marginal|V13,C12
 T21|.|README — security warning trusted net + firewall Allow note|V14,C5

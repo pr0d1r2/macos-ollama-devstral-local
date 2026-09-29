@@ -5,6 +5,15 @@ repo_dir=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 mock_bin=$(mktemp -d)
 trap 'rm -rf "$mock_bin"' EXIT HUP INT TERM
 
+# A zip/unzip round trip may drop the executable bit. The documented
+# `sh start.sh` bootstrap must repair it for a subsequent direct invocation.
+exec_bit_test_dir=$(mktemp -d)
+trap 'rm -rf "$mock_bin" "$exec_bit_test_dir"' EXIT HUP INT TERM
+cp "$repo_dir/start.sh" "$exec_bit_test_dir/start.sh"
+chmod 644 "$exec_bit_test_dir/start.sh"
+sh "$exec_bit_test_dir/start.sh" 2>/dev/null || true
+[ -x "$exec_bit_test_dir/start.sh" ]
+
 cat >"$mock_bin/uname" <<'EOF'
 #!/bin/sh
 printf '%s\n' "${MOCK_UNAME:-arm64}"
