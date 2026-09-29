@@ -20,6 +20,31 @@ unpack, run, and you get a shared LAN inference endpoint in minutes.
 > This repo is materialized and tended via the
 > [set-and-setting](https://github.com/pr0d1r2/set-and-setting) ecosystem.
 
+## Quick start from a ZIP
+
+No Git, build tool, package manager, or Nix installation is needed at runtime:
+
+1. Open the repository page, choose **Code → Download ZIP**, and save the ZIP.
+2. Unpack it in Finder (or with `unzip`) and open Terminal in the unpacked
+   repository directory.
+3. Run the bootstrap with `sh start.sh`:
+
+   ```sh
+   cd macos-ollama-devstral-local-main
+   sh start.sh
+   ```
+
+   ZIP extraction can remove executable bits; `sh start.sh` works regardless
+   and repairs the entrypoint for later `./start.sh` runs. On the first run,
+   if `/Applications/Ollama.app` is absent, the script opens the Ollama
+   download page, prints the installation steps, and waits for Ollama.app
+   before continuing. It then installs the managed headless service, pulls
+   Devstral, warms the model, and prints the LAN endpoint.
+
+To select a RAM tier before starting, set `TIER` in the same command, for
+example `TIER=64 sh start.sh`. See the tier table below for the available
+values and tuning; the default is the 32 GB tier.
+
 ## What it will do
 
 - One `start.sh` that checks for `/Applications/Ollama.app`, guides
