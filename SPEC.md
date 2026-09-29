@@ -106,7 +106,7 @@ T10|x|warm/preload model on start (priming generate)|V18,C15
 T11|x|healthcheck helper — curl /api/tags|V15,I.api
 T12|x|start.sh — orchestrate T2-T11, print `<mac>.local` endpoint|V1,V5,V15,I.start
 T13|x|stop.sh — launchctl unload, safe when idle|V6,V16,I.stop
-T14|.|restart.sh — unload then load|V7,I.restart
+T14|x|restart.sh — unload then load|V7,I.restart
 T15|.|uninstall.sh — stop first, rm plist, unset, optional rm model|V8,I.uninstall
 T16|.|ollama helpers — get-model/status/models/test/prompt (sh, lift sibling)|V23,I.helpers
 T17|.|RAM tier → quant + ctx + num_parallel map; 16GB marginal|V10,V13
