@@ -2,6 +2,12 @@
 set -eu
 
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+
+# Archives and some unzip tools do not preserve executable bits. Keep
+# `sh start.sh` as the bootstrap path, then repair the entrypoint when the
+# filesystem permits it so later invocations can use `./start.sh`.
+chmod +x "$0" 2>/dev/null || true
+
 # shellcheck disable=SC1091
 . "$script_dir/config.sh"
 
