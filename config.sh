@@ -7,6 +7,7 @@
 # selected tier without changing the tier label.
 MODEL=${MODEL:-devstral}
 PORT=${PORT:-11434}
+OLLAMA_HOST=${OLLAMA_HOST:-0.0.0.0:$PORT}
 TIER=${TIER:-32}
 KEEP_ALIVE=${KEEP_ALIVE:--1}
 NUM_PARALLEL=${NUM_PARALLEL:-2}
@@ -48,3 +49,7 @@ esac
 
 QUANT=${QUANT:-$DEFAULT_QUANT}
 CTX=${CTX:-$DEFAULT_CTX}
+
+# All script-owned Ollama CLI/API calls must target the managed service rather
+# than a separate localhost-default Ollama instance.
+export OLLAMA_HOST
