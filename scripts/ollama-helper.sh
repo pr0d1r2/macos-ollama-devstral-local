@@ -11,7 +11,7 @@ case ${1:-} in
     curl -fsS "$@" "$OLLAMA_API_URL$endpoint"
     ;;
   escape)
-    printf '%s' "$2" | sed 's/[\\]/\\\\/g; s/"/\\"/g; :a;N;$!ba;s/\n/\\n/g'
+    printf '%s' "$2" | sed 's/[\\]/\\\\/g; s/"/\\"/g; :b;N;$!bb;s/\n/\\n/g'
     ;;
   field)
     key=$2
