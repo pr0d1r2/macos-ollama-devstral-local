@@ -71,9 +71,6 @@ process that owns port 11434.
   | 96 GB | `q8_0` | 32,768 | 6 | |
   | 128 GB | `q8_0` | 65,536 | 8 | |
 
-- Agent gateways (`agent-opencode.sh`, `agent-pi.sh`, `agent-codex.sh`)
-  that point local coding agents at the endpoint.
-
 ## Security
 
 The endpoint is a bare `0.0.0.0` service with **no authentication and no
