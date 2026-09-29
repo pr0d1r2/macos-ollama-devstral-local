@@ -45,5 +45,7 @@ if PATH="$mock_bin:$PATH" HOME="$test_dir/home" OLLAMA_PLIST_PATH="$plist" \
   echo "uninstall accepted an invalid option" >&2
   exit 1
 fi
+[ -e "$plist" ]
+[ ! -s "$launchctl_log" ]
 
 echo "uninstall.sh tests passed"

@@ -9,6 +9,16 @@ launch_agents_dir=${LAUNCH_AGENTS_DIR:-${HOME:?}/Library/LaunchAgents}
 label=${OLLAMA_LAUNCHD_LABEL:-com.pr0d1r2.ollama-devstral-local}
 plist_path=${OLLAMA_PLIST_PATH:-$launch_agents_dir/$label.plist}
 
+remove_model=${UNINSTALL_REMOVE_MODEL:-0}
+case ${1:-} in
+  '') ;;
+  --remove-model) remove_model=1 ;;
+  *)
+    echo "Usage: $0 [--remove-model]" >&2
+    exit 2
+    ;;
+esac
+
 # Stop before removing the job definition.  stop.sh deliberately tolerates an
 # absent job, so uninstall is safe to run repeatedly.
 sh "$script_dir/stop.sh"
@@ -20,16 +30,6 @@ echo "Removed Ollama LaunchAgent plist: $plist_path"
 # this script cannot leave managed Ollama settings in its caller.
 managed_host=$OLLAMA_HOST
 unset OLLAMA_HOST OLLAMA_CLI
-
-remove_model=${UNINSTALL_REMOVE_MODEL:-0}
-case ${1:-} in
-  '') ;;
-  --remove-model) remove_model=1 ;;
-  *)
-    echo "Usage: $0 [--remove-model]" >&2
-    exit 2
-    ;;
-esac
 
 if [ "$remove_model" = 1 ]; then
   ollama_cli=${OLLAMA_CLI_PATH:-}
