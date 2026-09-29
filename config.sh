@@ -42,10 +42,9 @@ case $TIER in
     ;;
   *)
     echo "Unsupported RAM tier: $TIER (expected 16, 24, 32, 48, 64, 96, or 128)" >&2
-    return 1 2>/dev/null || exit 1
+    exit 1
     ;;
 esac
 
 QUANT=${QUANT:-$DEFAULT_QUANT}
 CTX=${CTX:-$DEFAULT_CTX}
-
