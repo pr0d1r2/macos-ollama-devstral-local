@@ -44,7 +44,7 @@ trap 'rm -f "$temporary_plist"' EXIT HUP INT TERM
   printf '%s\n' '  <key>ProgramArguments</key>' '  <array>'
   printf '%s\n' "    <string>$(printf '%s' "$OLLAMA_CLI" | sed "$xml_escape_sed")</string>" '    <string>serve</string>' '  </array>'
   printf '%s\n' '  <key>EnvironmentVariables</key>' '  <dict>'
-  printf '%s\n' '    <key>OLLAMA_HOST</key>' "    <string>$(printf '%s' "0.0.0.0:$PORT" | sed "$xml_escape_sed")</string>"
+  printf '%s\n' '    <key>OLLAMA_HOST</key>' "    <string>$(printf '%s' "$OLLAMA_HOST" | sed "$xml_escape_sed")</string>"
   printf '%s\n' '    <key>OLLAMA_KEEP_ALIVE</key>' "    <string>$(printf '%s' "$KEEP_ALIVE" | sed "$xml_escape_sed")</string>"
   printf '%s\n' '    <key>OLLAMA_CONTEXT_LENGTH</key>' "    <string>$(printf '%s' "$CTX" | sed "$xml_escape_sed")</string>"
   printf '%s\n' '    <key>OLLAMA_NUM_PARALLEL</key>' "    <string>$(printf '%s' "$NUM_PARALLEL" | sed "$xml_escape_sed")</string>"

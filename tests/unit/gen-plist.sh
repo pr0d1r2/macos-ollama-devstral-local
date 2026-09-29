@@ -23,6 +23,12 @@ grep -F '<key>KeepAlive</key>' "$plist" >/dev/null
 grep -F '<key>StandardOutPath</key>' "$plist" >/dev/null
 grep -F '<key>StandardErrorPath</key>' "$plist" >/dev/null
 
+HOME=$test_dir OLLAMA_CLI=$cli OLLAMA_HOST=192.0.2.10:12345 \
+  LAUNCH_AGENTS_DIR=$test_dir/custom-agents OLLAMA_LOG_DIR=$test_dir/custom-logs \
+  sh "$repo_dir/scripts/gen-plist.sh" >"$test_dir/custom-output"
+custom_plist=$(cat "$test_dir/custom-output")
+grep -F '<string>192.0.2.10:12345</string>' "$custom_plist" >/dev/null
+
 if command -v xmllint >/dev/null 2>&1; then
   xmllint --noout "$plist"
 fi
