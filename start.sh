@@ -75,3 +75,16 @@ else
   echo "Pulling model: $MODEL"
   "$OLLAMA_CLI" pull "$MODEL"
 fi
+
+# Prime the model after launchd has started the service.  An empty, non-streaming
+# generate request loads the model into memory without producing user-visible
+# output; retry while launchd finishes bringing the listener up.
+echo "Warming model: $MODEL"
+if ! curl -fsS --retry 30 --retry-delay 1 --retry-connrefused \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"'"$MODEL"'","prompt":"","stream":false,"keep_alive":-1}' \
+  "http://127.0.0.1:$PORT/api/generate" >/dev/null; then
+  echo "Failed to warm model through Ollama at http://127.0.0.1:$PORT." >&2
+  exit 1
+fi
+echo "Model warm: $MODEL"
