@@ -59,7 +59,10 @@ process that owns port 11434.
 
 - Per-RAM-tier tuning (16, 24, 32, 48, 64, 96, 128 GB) for quantization,
   context length, and concurrent requests. Set `TIER` before running
-  `start.sh`; `QUANT`, `CTX`, and `NUM_PARALLEL` can override the defaults.
+  `start.sh`; `CTX` and `NUM_PARALLEL` can override the runtime defaults.
+  The quantization column documents the recommended model artifact for each
+  tier; the current bootstrap does not select a different Ollama artifact
+  from `QUANT`.
 
   | RAM | Quantization | Context | Parallel | Notes |
   | ---: | :--- | ---: | ---: | :--- |
