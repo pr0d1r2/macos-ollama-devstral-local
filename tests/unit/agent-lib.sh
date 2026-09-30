@@ -46,6 +46,19 @@ grep -F 'args=one two words' "$test_dir/output" >/dev/null
 grep -F 'stdin' "$test_dir/output" >/dev/null
 grep -F 'http://127.0.0.1:11434/v1/models' "$curl_log" >/dev/null
 
+# The wrapper can have the same name as the configured agent binary.  Its own
+# directory must be removed from PATH or it will recurse into itself.
+cp "$wrapper_dir/runner.sh" "$wrapper_dir/real-agent"
+chmod +x "$wrapper_dir/real-agent"
+if PATH="$wrapper_dir:$mock_bin:$system_path" MOCK_CURL_LOG="$curl_log" \
+  AGENT_BASE_URL=http://127.0.0.1:11434/v1 "$wrapper_dir/real-agent" one >"$test_dir/self-output"; then
+  echo "agent_exec unexpectedly returned successfully" >&2
+  exit 1
+else
+  [ "$?" -eq 23 ]
+fi
+grep -F 'args=one' "$test_dir/self-output" >/dev/null
+
 if PATH="$wrapper_dir:$mock_bin:$system_path" MOCK_CURL_LOG="$curl_log" AGENT_BASE_URL=http://127.0.0.1:11434/v1 \
   AGENT_MODEL=other "$wrapper_dir/runner.sh" >/dev/null 2>"$test_dir/error"; then
   echo "agent_exec accepted a missing model tag" >&2
