@@ -119,7 +119,7 @@ T22|x|README — LAN reach `<mac>.local:11434`, find hostname|C14,I.lan
 T23|x|config — per-agent binary + config path + base_url(/v1) + model + dummy key `ollama`|V25,V28,I.config
 T24|x|agent-lib.sh — resolve real binary (skip self via PATH minus script dir), verify model tag /v1/models, exec "$@"|V24,V26,V27,V28,I.agents
 T25|x|agent-opencode.sh — write ~/.config/opencode/opencode.json: provider.ollama {npm:@ai-sdk/openai-compatible, options.baseURL, models.devstral}, model="ollama/devstral"; exec opencode|V24,V25,I.agents
-T26|.|agent-pi.sh — write ~/.pi/agent/models.json: providers.ollama {baseUrl,/v1, api:openai-completions, apiKey:ollama, models:[{id:devstral}]}; exec pi (install via `ollama launch pi` or npm @earendil-works/pi-coding-agent)|V24,V25,I.agents
+T26|x|agent-pi.sh — write ~/.pi/agent/models.json: providers.ollama {baseUrl,/v1, api:openai-completions, apiKey:ollama, models:[{id:devstral}]}; exec pi (install via `ollama launch pi` or npm @earendil-works/pi-coding-agent)|V24,V25,I.agents
 T27|.|agent-codex.sh — write ~/.codex/config.toml: [model_providers.ollama-local] base_url(/v1), wire_api="responses"; model+model_provider top-level; exec codex (NOT --oss: hardcodes localhost, ignores base_url)|V24,V25,I.agents
 T28|.|README — agent gateways: CLI + inference proxy; install (pi via `ollama launch pi`, codex npm @openai/codex, opencode); codex wire_api=responses needs recent ollama|I.agents,I.readme
 T29|.|templates/ — opencode.json, codex.config.toml, pi.models.json w/ __BASE_URL__/__MODEL__ placeholders|C18,I.templates
