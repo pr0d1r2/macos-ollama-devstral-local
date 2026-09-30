@@ -7,19 +7,6 @@ script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 
 config_dir=$(dirname -- "$PI_CONFIG_PATH")
 mkdir -p "$config_dir"
-cat >"$PI_CONFIG_PATH" <<EOF
-{
-  "providers": {
-    "ollama": {
-      "baseUrl": "$AGENT_BASE_URL",
-      "api": "openai-completions",
-      "apiKey": "$AGENT_API_KEY",
-      "models": [
-        {"id": "$AGENT_MODEL"}
-      ]
-    }
-  }
-}
-EOF
+agent_render_template pi.models.json "$PI_CONFIG_PATH"
 
 agent_exec "$PI_BINARY" "$@"
