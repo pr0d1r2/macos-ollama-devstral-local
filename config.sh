@@ -75,9 +75,9 @@ CODEX_CONFIG_PATH=${CODEX_CONFIG_PATH:-${HOME:?}/.codex/config.toml}
 
 # Short aliases are useful to wrappers and preserve a compact shell-facing
 # interface while the *_PATH names document that these are file destinations.
-export OPENCODE_CONFIG=$OPENCODE_CONFIG_PATH
-export PI_CONFIG=$PI_CONFIG_PATH
-export CODEX_CONFIG=$CODEX_CONFIG_PATH
+export OPENCODE_CONFIG="$OPENCODE_CONFIG_PATH"
+export PI_CONFIG="$PI_CONFIG_PATH"
+export CODEX_CONFIG="$CODEX_CONFIG_PATH"
 
 # All script-owned Ollama CLI/API calls must target the managed service rather
 # than a separate localhost-default Ollama instance.
