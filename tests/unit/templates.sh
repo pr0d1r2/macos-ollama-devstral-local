@@ -6,6 +6,13 @@ templates_dir=$repo_dir/templates
 test_dir=$(mktemp -d)
 trap 'rm -rf "$test_dir"' EXIT HUP INT TERM
 
+# Wrappers must render the checked-in templates rather than maintaining a
+# second, heredoc-based copy of each agent configuration.
+for wrapper in agent-opencode.sh agent-pi.sh agent-codex.sh; do
+  grep -F 'agent_render_template' "$repo_dir/$wrapper" >/dev/null
+done
+grep -F 'sed -e "s|__BASE_URL__|' "$repo_dir/agent-lib.sh" >/dev/null
+
 for template in opencode.json pi.models.json codex.config.toml; do
   [ -f "$templates_dir/$template" ]
   grep -F '__BASE_URL__' "$templates_dir/$template" >/dev/null

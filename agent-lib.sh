@@ -50,6 +50,16 @@ agent_verify_model() {
   return 1
 }
 
+agent_render_template() {
+  agent_template=$1
+  agent_destination=$2
+  agent_base_url_sed=$(printf '%s' "$AGENT_BASE_URL" | sed 's/[\\&|]/\\&/g')
+  agent_model_sed=$(printf '%s' "$AGENT_MODEL" | sed 's/[\\&|]/\\&/g')
+  sed -e "s|__BASE_URL__|$agent_base_url_sed|g" \
+    -e "s|__MODEL__|$agent_model_sed|g" \
+    "$agent_script_dir/templates/$agent_template" >"$agent_destination"
+}
+
 agent_exec() {
   agent_binary=$1
   shift

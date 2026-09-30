@@ -7,22 +7,6 @@ script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 
 config_dir=$(dirname -- "$OPENCODE_CONFIG_PATH")
 mkdir -p "$config_dir"
-cat >"$OPENCODE_CONFIG_PATH" <<EOF
-{
-  "provider": {
-    "ollama": {
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "$AGENT_BASE_URL",
-        "apiKey": "$AGENT_API_KEY"
-      },
-      "models": {
-        "$AGENT_MODEL": {}
-      }
-    }
-  },
-  "model": "ollama/$AGENT_MODEL"
-}
-EOF
+agent_render_template opencode.json "$OPENCODE_CONFIG_PATH"
 
 agent_exec "$OPENCODE_BINARY" "$@"
