@@ -51,7 +51,8 @@ grep -F 'http://127.0.0.1:11434/v1/models' "$curl_log" >/dev/null
 cp "$wrapper_dir/runner.sh" "$wrapper_dir/real-agent"
 chmod +x "$wrapper_dir/real-agent"
 if PATH="$wrapper_dir:$mock_bin:$system_path" MOCK_CURL_LOG="$curl_log" \
-  AGENT_BASE_URL=http://127.0.0.1:11434/v1 "$wrapper_dir/real-agent" one >"$test_dir/self-output"; then
+  AGENT_BASE_URL=http://127.0.0.1:11434/v1 "$wrapper_dir/real-agent" one \
+  </dev/null >"$test_dir/self-output"; then
   echo "agent_exec unexpectedly returned successfully" >&2
   exit 1
 else
@@ -60,14 +61,14 @@ fi
 grep -F 'args=one' "$test_dir/self-output" >/dev/null
 
 if PATH="$wrapper_dir:$mock_bin:$system_path" MOCK_CURL_LOG="$curl_log" AGENT_BASE_URL=http://127.0.0.1:11434/v1 \
-  AGENT_MODEL=other "$wrapper_dir/runner.sh" >/dev/null 2>"$test_dir/error"; then
+  AGENT_MODEL=other "$wrapper_dir/runner.sh" </dev/null >/dev/null 2>"$test_dir/error"; then
   echo "agent_exec accepted a missing model tag" >&2
   exit 1
 fi
 grep -F 'Ollama model tag not found' "$test_dir/error" >/dev/null
 
 if PATH="$wrapper_dir:$mock_bin:$system_path" AGENT_BASE_URL=http://127.0.0.1:11434/v1 \
-  "$wrapper_dir/runner.sh" >/dev/null 2>"$test_dir/error"; then
+  "$wrapper_dir/runner.sh" </dev/null >/dev/null 2>"$test_dir/error"; then
   echo "agent_exec accepted a missing binary" >&2
   exit 1
 fi
