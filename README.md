@@ -56,12 +56,12 @@ Ollama.app setting below (verified on macOS 26.x):
 4. If macOS shows an incoming-connections firewall prompt, choose **Allow**.
 5. Verify the bind in Terminal:
 
-   ```sh
-   lsof -nP -iTCP:11434 -sTCP:LISTEN
-   ```
+    ```sh
+    lsof -nP -iTCP:11434 -sTCP:LISTEN
+    ```
 
-   The listener should show `*:11434` (or an equivalent wildcard bind), not
-   only `127.0.0.1:11434`.
+    The listener should show `*:11434` (or an equivalent wildcard bind), not
+    only `127.0.0.1:11434`.
 
 This app-toggle path binds Ollama to the LAN, handles the macOS firewall
 prompt, and persists across launches. It is intentionally insecure: the

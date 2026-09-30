@@ -17,7 +17,7 @@ grep -F 'Fastest LAN path: Ollama.app network toggle' "$readme" >/dev/null
 grep -F 'verified on macOS 26.x' "$readme" >/dev/null
 grep -F 'Expose Ollama to the network' "$readme" >/dev/null
 grep -F 'lsof -nP -iTCP:11434 -sTCP:LISTEN' "$readme" >/dev/null
-grep -F 'shows `*:11434`' "$readme" >/dev/null
+grep -F "shows \`*:11434\`" "$readme" >/dev/null
 grep -F 'connection refused' "$readme" >/dev/null
 grep -F 'turn **Expose Ollama to the network** **off**' "$readme" >/dev/null
 
