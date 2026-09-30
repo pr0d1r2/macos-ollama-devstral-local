@@ -52,10 +52,11 @@ done
 MODEL=custom PORT=12345 OLLAMA_HOST='' TIER=64 QUANT=q4_0 CTX=2048 KEEP_ALIVE=30 NUM_PARALLEL=4 \
   sh -c '. "$1"; [ "$MODEL" = custom ]; [ "$PORT" = 12345 ]; [ "$OLLAMA_HOST" = 0.0.0.0:12345 ]; [ "$TIER" = 64 ]; [ "$QUANT" = q4_0 ]; [ "$CTX" = 2048 ]; [ "$KEEP_ALIVE" = 30 ]; [ "$NUM_PARALLEL" = 4 ]; [ "$(sh -c '\''printf %s "$OLLAMA_HOST"'\'')" = 0.0.0.0:12345 ]' sh "$repo_dir/config.sh"
 
-HOME=/tmp/agent-home AGENT_MODEL=custom AGENT_API_KEY=test-key \
+fixture_dir=${TMPDIR:-.}/agent-home
+HOME=$fixture_dir AGENT_MODEL=custom AGENT_API_KEY=test-key \
   AGENT_BASE_URL=http://dev-mac.local:11434/v1 OPENCODE_BINARY=custom-opencode \
   PI_BINARY=custom-pi CODEX_BINARY=custom-codex \
-  OPENCODE_CONFIG_PATH=/tmp/opencode.json PI_CONFIG_PATH=/tmp/pi.json \
-  CODEX_CONFIG_PATH=/tmp/codex.toml \
-  sh -c '. "$1"; [ "$AGENT_MODEL" = custom ]; [ "$AGENT_API_KEY" = test-key ]; [ "$AGENT_BASE_URL" = http://dev-mac.local:11434/v1 ]; [ "$OPENCODE_BINARY" = custom-opencode ]; [ "$PI_BINARY" = custom-pi ]; [ "$CODEX_BINARY" = custom-codex ]; [ "$OPENCODE_CONFIG_PATH" = /tmp/opencode.json ]; [ "$PI_CONFIG_PATH" = /tmp/pi.json ]; [ "$CODEX_CONFIG_PATH" = /tmp/codex.toml ]' sh "$repo_dir/config.sh"
+  OPENCODE_CONFIG_PATH=$fixture_dir/opencode.json PI_CONFIG_PATH=$fixture_dir/pi.json \
+  CODEX_CONFIG_PATH=$fixture_dir/codex.toml \
+  sh -c '. "$1"; [ "$AGENT_MODEL" = custom ]; [ "$AGENT_API_KEY" = test-key ]; [ "$AGENT_BASE_URL" = http://dev-mac.local:11434/v1 ]; [ "$OPENCODE_BINARY" = custom-opencode ]; [ "$PI_BINARY" = custom-pi ]; [ "$CODEX_BINARY" = custom-codex ]; [ "$OPENCODE_CONFIG_PATH" = "$2/opencode.json" ]; [ "$PI_CONFIG_PATH" = "$2/pi.json" ]; [ "$CODEX_CONFIG_PATH" = "$2/codex.toml" ]' sh "$repo_dir/config.sh" "$fixture_dir"
 echo "config.sh tests passed"
