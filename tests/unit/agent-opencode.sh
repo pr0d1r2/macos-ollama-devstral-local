@@ -25,7 +25,7 @@ chmod +x "$mock_bin/opencode"
 
 if printf 'stdin\n' | HOME="$home_dir" PATH="$mock_bin:$PATH" \
   OPENCODE_CONFIG_PATH="$home_dir/.config/opencode/opencode.json" \
-  "$repo_dir/agent-opencode.sh" 'two words' >"$test_dir/output"; then
+  sh "$repo_dir/agent-opencode.sh" 'two words' >"$test_dir/output"; then
   echo "agent-opencode.sh did not preserve the real binary exit code" >&2
   exit 1
 else
