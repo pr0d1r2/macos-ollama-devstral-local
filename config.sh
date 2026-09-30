@@ -59,6 +59,26 @@ QUANT=${QUANT:-$DEFAULT_QUANT}
 CTX=${CTX:-$DEFAULT_CTX}
 NUM_PARALLEL=${NUM_PARALLEL:-$DEFAULT_NUM_PARALLEL}
 
+# Agent gateways use Ollama's OpenAI-compatible API.  Keep these settings in
+# the shared config so each wrapper has one consistent, overridable contract.
+AGENT_MODEL=${AGENT_MODEL:-$MODEL}
+AGENT_API_KEY=${AGENT_API_KEY:-ollama}
+AGENT_BASE_URL=${AGENT_BASE_URL:-http://127.0.0.1:$PORT/v1}
+
+OPENCODE_BINARY=${OPENCODE_BINARY:-opencode}
+PI_BINARY=${PI_BINARY:-pi}
+CODEX_BINARY=${CODEX_BINARY:-codex}
+
+OPENCODE_CONFIG_PATH=${OPENCODE_CONFIG_PATH:-${HOME:?}/.config/opencode/opencode.json}
+PI_CONFIG_PATH=${PI_CONFIG_PATH:-${HOME:?}/.pi/agent/models.json}
+CODEX_CONFIG_PATH=${CODEX_CONFIG_PATH:-${HOME:?}/.codex/config.toml}
+
+# Short aliases are useful to wrappers and preserve a compact shell-facing
+# interface while the *_PATH names document that these are file destinations.
+export OPENCODE_CONFIG="$OPENCODE_CONFIG_PATH"
+export PI_CONFIG="$PI_CONFIG_PATH"
+export CODEX_CONFIG="$CODEX_CONFIG_PATH"
+
 # All script-owned Ollama CLI/API calls must target the managed service rather
 # than a separate localhost-default Ollama instance.
 export OLLAMA_HOST
