@@ -1,0 +1,15 @@
+{
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "__BASE_URL__",
+        "apiKey": "ollama"
+      },
+      "models": {
+        "__MODEL__": {}
+      }
+    }
+  },
+  "model": "ollama/__MODEL__"
+}

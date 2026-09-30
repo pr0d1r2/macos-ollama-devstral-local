@@ -1,0 +1,6 @@
+model = "__MODEL__"
+model_provider = "ollama-local"
+
+[model_providers.ollama-local]
+base_url = "__BASE_URL__"
+wire_api = "responses"

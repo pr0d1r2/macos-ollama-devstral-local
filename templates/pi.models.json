@@ -1,0 +1,12 @@
+{
+  "providers": {
+    "ollama": {
+      "baseUrl": "__BASE_URL__",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "models": [
+        {"id": "__MODEL__"}
+      ]
+    }
+  }
+}
