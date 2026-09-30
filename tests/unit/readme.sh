@@ -13,6 +13,13 @@ grep -F 'no authentication and no' "$readme" >/dev/null
 grep -F 'use it only on a trusted network' "$readme" >/dev/null
 grep -F 'choose **Allow** for LAN clients' "$readme" >/dev/null
 grep -F 'that prompt' "$readme" >/dev/null
+grep -F 'Fastest LAN path: Ollama.app network toggle' "$readme" >/dev/null
+grep -F 'verified on macOS 26.x' "$readme" >/dev/null
+grep -F 'Expose Ollama to the network' "$readme" >/dev/null
+grep -F 'lsof -nP -iTCP:11434 -sTCP:LISTEN' "$readme" >/dev/null
+grep -F "shows \`*:11434\`" "$readme" >/dev/null
+grep -F 'connection refused' "$readme" >/dev/null
+grep -F 'turn **Expose Ollama to the network** **off**' "$readme" >/dev/null
 
 # T20: keep every supported RAM tier and its runtime tuning visible in the
 # README, including the explicit warning for the minimum tier.

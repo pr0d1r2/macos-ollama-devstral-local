@@ -45,6 +45,40 @@ To select a RAM tier before starting, set `TIER` in the same command, for
 example `TIER=64 sh start.sh`. See the tier table below for the available
 values and tuning; the default is the 32 GB tier.
 
+## Fastest LAN path: Ollama.app network toggle
+
+For the fastest path to a working endpoint on a trusted network, use the
+Ollama.app setting below (verified on macOS 26.x):
+
+1. Open **Ollama.app** from Applications.
+2. Open the Ollama menu from the menu bar, then choose **Settings**.
+3. In **Settings**, enable **Expose Ollama to the network**.
+4. If macOS shows an incoming-connections firewall prompt, choose **Allow**.
+5. Verify the bind in Terminal:
+
+    ```sh
+    lsof -nP -iTCP:11434 -sTCP:LISTEN
+    ```
+
+    The listener should show `*:11434` (or an equivalent wildcard bind), not
+    only `127.0.0.1:11434`.
+
+This app-toggle path binds Ollama to the LAN, handles the macOS firewall
+prompt, and persists across launches. It is intentionally insecure: the
+endpoint has no authentication or TLS and is available on every network while
+the setting remains enabled. Use it only on a trusted network and turn
+**Expose Ollama to the network** **off** before leaving that network.
+
+If a client reports **connection refused**, first confirm that Ollama.app is
+running and that the `lsof` command above shows `*:11434`. If it shows only
+`127.0.0.1:11434`, enable the setting again and restart Ollama.app. If there
+is no listener, allow the firewall prompt (or review the macOS firewall rule),
+then retry the check before testing `http://<mac>.local:11434` from the client.
+
+The `start.sh` workflow below installs the managed headless LaunchAgent and
+is the alternative for persistent unattended use; do not run both service
+paths against port `11434` at the same time.
+
 ## What it will do
 
 - One `start.sh` that checks for `/Applications/Ollama.app`, guides
