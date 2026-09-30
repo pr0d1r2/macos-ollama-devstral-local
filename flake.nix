@@ -33,6 +33,7 @@
         "ascii"
         "markdown"
         "yaml"
+        "toml"
       ];
       src = ./.;
     };
