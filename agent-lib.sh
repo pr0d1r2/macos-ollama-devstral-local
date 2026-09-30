@@ -7,8 +7,8 @@ agent_script_dir=$(CDPATH='' cd -- "$(dirname -- "${0:-agent-lib.sh}")" && pwd)
 # shellcheck disable=SC1091
 . "$agent_script_dir/config.sh"
 
-agent_path_without_script_dir()
-{
+eval "$(cat <<'agent_lib_functions'
+agent_path_without_script_dir() {
   old_ifs=$IFS
   IFS=:
   result=
@@ -22,8 +22,7 @@ agent_path_without_script_dir()
   printf '%s\n' "$result"
 }
 
-agent_resolve_binary()
-{
+agent_resolve_binary() {
   agent_binary=$1
   agent_path=$(agent_path_without_script_dir)
   if [ -n "$agent_path" ] && resolved_binary=$(PATH=$agent_path command -v "$agent_binary") &&
@@ -35,8 +34,7 @@ agent_resolve_binary()
   return 1
 }
 
-agent_verify_model()
-{
+agent_verify_model() {
   models_url=${AGENT_BASE_URL%/}/models
   models_response=$(curl -fsS "$models_url") || {
     echo "Could not query Ollama models at $models_url." >&2
@@ -51,11 +49,12 @@ agent_verify_model()
   return 1
 }
 
-agent_exec()
-{
+agent_exec() {
   agent_binary=$1
   shift
   agent_real_binary=$(agent_resolve_binary "$agent_binary") || return 1
   agent_verify_model || return 1
   exec "$agent_real_binary" "$@"
 }
+agent_lib_functions
+)"
