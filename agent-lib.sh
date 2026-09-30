@@ -7,7 +7,8 @@ agent_script_dir=$(CDPATH='' cd -- "$(dirname -- "${0:-agent-lib.sh}")" && pwd)
 # shellcheck disable=SC1091
 . "$agent_script_dir/config.sh"
 
-eval "$(cat <<'agent_lib_functions'
+eval "$(
+  cat <<'agent_lib_functions'
 agent_path_without_script_dir() {
   old_ifs=$IFS
   IFS=:
