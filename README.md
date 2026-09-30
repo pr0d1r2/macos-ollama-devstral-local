@@ -101,6 +101,64 @@ serving Mac is awake, and that its firewall prompt was allowed. You can also
 confirm the serving Mac's full local hostname with `hostname` and use that
 name before the `.local:11434` suffix.
 
+## Agent gateways and the OpenAI-compatible inference proxy
+
+The repository includes thin gateways for three agent CLIs. Each gateway
+writes the agent's native config, points it at Ollama's OpenAI-compatible
+proxy at `http://127.0.0.1:11434/v1`, verifies that `devstral` is available,
+and then `exec`s the real CLI with all arguments, standard input, output, and
+exit status preserved. Run them from the unpacked repository:
+
+### Pi
+
+Install Pi using Ollama's launcher, which installs and configures the Pi
+coding agent:
+
+```sh
+ollama launch pi
+./agent-pi.sh
+```
+
+The gateway writes `~/.pi/agent/models.json`. It can also be used with a Pi
+installation that provides a `pi` binary on `PATH`.
+
+### Codex
+
+Install the Codex CLI from npm, then start it through the gateway:
+
+```sh
+npm install -g @openai/codex
+./agent-codex.sh
+```
+
+The gateway writes `~/.codex/config.toml`. It selects the local provider with
+`wire_api = "responses"`; use a recent Ollama release that supports the
+Responses API. Do not use `codex --oss`: that mode hardcodes localhost and
+does not use the gateway's configured base URL.
+
+### OpenCode
+
+Install OpenCode from npm, then start it through the gateway:
+
+```sh
+npm install -g opencode-ai
+./agent-opencode.sh
+```
+
+The gateway writes `~/.config/opencode/opencode.json` and selects
+`ollama/devstral` through the OpenAI-compatible provider.
+
+These scripts are both agent launchers and examples of the inference proxy
+contract. Other OpenAI-compatible clients can use
+`http://<mac>.local:11434/v1`, model `devstral`, and the dummy API key
+`ollama`; the key is accepted for compatibility and is not authentication.
+The wrappers default to the serving Mac itself. They can be pointed at a
+remote serving Mac by setting `AGENT_BASE_URL`, for example:
+
+```sh
+AGENT_BASE_URL=http://dev-mac.local:11434/v1 ./agent-codex.sh
+```
+
 ## What it will do
 
 - One `start.sh` that checks for `/Applications/Ollama.app`, guides

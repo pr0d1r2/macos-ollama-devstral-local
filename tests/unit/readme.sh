@@ -24,6 +24,15 @@ grep -F 'scutil --get LocalHostName' "$readme" >/dev/null
 grep -F 'http://dev-mac.local:11434' "$readme" >/dev/null
 grep -F 'curl http://dev-mac.local:11434/api/tags' "$readme" >/dev/null
 grep -F 'same trusted LAN' "$readme" >/dev/null
+grep -F '## Agent gateways and the OpenAI-compatible inference proxy' "$readme" >/dev/null
+grep -F 'ollama launch pi' "$readme" >/dev/null
+grep -F 'npm install -g @openai/codex' "$readme" >/dev/null
+grep -F 'npm install -g opencode-ai' "$readme" >/dev/null
+grep -F 'wire_api = "responses"' "$readme" >/dev/null
+grep -F 'recent Ollama release' "$readme" >/dev/null
+grep -F 'Do not use `codex --oss`' "$readme" >/dev/null
+grep -F 'http://<mac>.local:11434/v1' "$readme" >/dev/null
+grep -F 'dummy API key' "$readme" >/dev/null
 
 # T20: keep every supported RAM tier and its runtime tuning visible in the
 # README, including the explicit warning for the minimum tier.
