@@ -34,6 +34,7 @@
         "markdown"
         "yaml"
         "toml"
+        "bats"
       ];
       src = ./.;
     };
