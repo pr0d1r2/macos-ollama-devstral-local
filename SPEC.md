@@ -122,7 +122,7 @@ T25|x|agent-opencode.sh — write ~/.config/opencode/opencode.json: provider.oll
 T26|x|agent-pi.sh — write ~/.pi/agent/models.json: providers.ollama {baseUrl,/v1, api:openai-completions, apiKey:ollama, models:[{id:devstral}]}; exec pi (install via `ollama launch pi` or npm @earendil-works/pi-coding-agent)|V24,V25,I.agents
 T27|x|agent-codex.sh — write ~/.codex/config.toml: [model_providers.ollama-local] base_url(/v1), wire_api="responses"; model+model_provider top-level; exec codex (NOT --oss: hardcodes localhost, ignores base_url)|V24,V25,I.agents
 T28|x|README — agent gateways: CLI + inference proxy; install (pi via `ollama launch pi`, codex npm @openai/codex, opencode); codex wire_api=responses needs recent ollama|I.agents,I.readme
-T29|.|templates/ — opencode.json, codex.config.toml, pi.models.json w/ __BASE_URL__/__MODEL__ placeholders|C18,I.templates
+T29|x|templates/ — opencode.json, codex.config.toml, pi.models.json w/ __BASE_URL__/__MODEL__ placeholders|C18,I.templates
 T30|.|wrappers substitute template via sed → agent config path (T25-T27 read templates)|C18,V34,I.templates
 T31|x|flake.nix devShell — nix-dev-shell-agentic mkShells CI/dev split (dev/CI only)|C17,V29,I.dev
 T32|~|lefthook.yml — baseline 15 remotes done. Pending: execute-permissions, bats-unit/changed, unit-coverage, xmllint, taplo, markdownlint, actionlint, gitleaks|V30,V31,V32,V33,I.hooks
