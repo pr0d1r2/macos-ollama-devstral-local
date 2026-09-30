@@ -30,7 +30,7 @@ grep -F 'npm install -g @openai/codex' "$readme" >/dev/null
 grep -F 'npm install -g opencode-ai' "$readme" >/dev/null
 grep -F 'wire_api = "responses"' "$readme" >/dev/null
 grep -F 'recent Ollama release' "$readme" >/dev/null
-grep -F 'Do not use `codex --oss`' "$readme" >/dev/null
+grep -F "Do not use \`codex --oss\`" "$readme" >/dev/null
 grep -F 'http://<mac>.local:11434/v1' "$readme" >/dev/null
 grep -F 'dummy API key' "$readme" >/dev/null
 
