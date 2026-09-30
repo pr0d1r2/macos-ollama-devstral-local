@@ -16,7 +16,9 @@ done
 for template in opencode.json pi.models.json codex.config.toml; do
   sed -e 's|__BASE_URL__|http://127.0.0.1:11434/v1|g' \
     -e 's|__MODEL__|devstral|g' "$templates_dir/$template" >"$test_dir/$template"
-  ! grep -E '__BASE_URL__|__MODEL__' "$test_dir/$template" >/dev/null
+  if grep -E '__BASE_URL__|__MODEL__' "$test_dir/$template" >/dev/null; then
+    exit 1
+  fi
 done
 
 grep -F '"baseURL": "http://127.0.0.1:11434/v1"' "$test_dir/opencode.json" >/dev/null
