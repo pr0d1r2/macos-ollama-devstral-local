@@ -77,8 +77,13 @@ process that owns port 11434.
 ## Security
 
 The endpoint is a bare `0.0.0.0` service with **no authentication and no
-TLS**. Use it only on a trusted network. See `SPEC.md` for the full
-security model.
+TLS**. Anyone who can reach the Mac and port `11434` can use the model, so
+use it only on a trusted network and never expose it directly to the public
+internet. If macOS asks whether to allow incoming connections through the
+firewall, choose **Allow** for LAN clients to reach the service; that prompt
+is expected when enabling this trusted-network endpoint. Decline it, or
+restrict the firewall rule, if the network is not trusted. See `SPEC.md` for
+the full security model.
 
 ## Runtime vs dev
 

@@ -9,6 +9,10 @@ grep -F 'sh start.sh' "$readme" >/dev/null
 grep -F 'ZIP extraction can remove executable bits' "$readme" >/dev/null
 grep -F 'waits for Ollama.app' "$readme" >/dev/null
 grep -F 'TIER=64 sh start.sh' "$readme" >/dev/null
+grep -F 'no authentication and no' "$readme" >/dev/null
+grep -F 'use it only on a trusted network' "$readme" >/dev/null
+grep -F 'choose **Allow** for LAN clients' "$readme" >/dev/null
+grep -F 'that prompt' "$readme" >/dev/null
 
 # T20: keep every supported RAM tier and its runtime tuning visible in the
 # README, including the explicit warning for the minimum tier.

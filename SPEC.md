@@ -113,7 +113,7 @@ T17|x|RAM tier → quant + ctx + num_parallel map; 16GB marginal|V10,V13
 T18|x|exec-bit mitigation — self-chmod / sh start.sh fallback|V22,C7
 T19|x|README — usage: download zip, unpack, run start.sh|C7,I.readme
 T20|x|README — per-tier table 16..128 GB (quant, ctx); 16GB marginal|V13,C12
-T21|.|README — security warning trusted net + firewall Allow note|V14,C5
+T21|x|README — security warning trusted net + firewall Allow note|V14,C5
 T21a|.|README — app-toggle LAN-bind: Ollama.app Settings → "Expose Ollama to the network" (step-by-step, verified macOS 26.x) = FASTEST path, valid for trusted-net goal. Insecure caveat: turn OFF when leaving trusted net. Verify `lsof -nP -iTCP:11434 -sTCP:LISTEN` shows `*:11434`; troubleshoot connection-refused|V35,B1,I.readme
 T22|.|README — LAN reach `<mac>.local:11434`, find hostname|C14,I.lan
 T23|.|config — per-agent binary + config path + base_url(/v1) + model + dummy key `ollama`|V25,V28,I.config
