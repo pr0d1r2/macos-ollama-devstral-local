@@ -40,6 +40,8 @@ PATH="$mock_bin:$PATH" HOME="$test_dir/home" OLLAMA_PLIST_PATH="$plist" \
   MOCK_LAUNCHCTL_LOG="$launchctl_log" sh "$repo_dir/uninstall.sh" >/dev/null
 [ "$(sed -n '1p' "$launchctl_log")" = "unload $plist" ]
 
+: >"$launchctl_log"
+printf '%s\n' plist >"$plist"
 if PATH="$mock_bin:$PATH" HOME="$test_dir/home" OLLAMA_PLIST_PATH="$plist" \
   MOCK_LAUNCHCTL_LOG="$launchctl_log" sh "$repo_dir/uninstall.sh" --bad >/dev/null 2>&1; then
   echo "uninstall accepted an invalid option" >&2
