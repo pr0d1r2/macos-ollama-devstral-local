@@ -79,6 +79,28 @@ The `start.sh` workflow below installs the managed headless LaunchAgent and
 is the alternative for persistent unattended use; do not run both service
 paths against port `11434` at the same time.
 
+## Reach it from another Mac on the LAN
+
+Use the serving Mac's Bonjour hostname with the `.local` suffix; no raw IP
+address is needed. On the serving Mac, find the hostname with:
+
+```sh
+scutil --get LocalHostName
+```
+
+For example, if that prints `dev-mac`, another Mac on the same trusted LAN
+can reach Ollama at `http://dev-mac.local:11434`. Check the endpoint from the
+client with:
+
+```sh
+curl http://dev-mac.local:11434/api/tags
+```
+
+If the name does not resolve, confirm both Macs are on the same LAN, that the
+serving Mac is awake, and that its firewall prompt was allowed. You can also
+confirm the serving Mac's full local hostname with `hostname` and use that
+name before the `.local:11434` suffix.
+
 ## What it will do
 
 - One `start.sh` that checks for `/Applications/Ollama.app`, guides

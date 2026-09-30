@@ -19,7 +19,11 @@ grep -F 'Expose Ollama to the network' "$readme" >/dev/null
 grep -F 'lsof -nP -iTCP:11434 -sTCP:LISTEN' "$readme" >/dev/null
 grep -F "shows \`*:11434\`" "$readme" >/dev/null
 grep -F 'connection refused' "$readme" >/dev/null
-grep -F 'turn **Expose Ollama to the network** **off**' "$readme" >/dev/null
+grep -F '**Expose Ollama to the network** **off**' "$readme" >/dev/null
+grep -F 'scutil --get LocalHostName' "$readme" >/dev/null
+grep -F 'http://dev-mac.local:11434' "$readme" >/dev/null
+grep -F 'curl http://dev-mac.local:11434/api/tags' "$readme" >/dev/null
+grep -F 'same trusted LAN' "$readme" >/dev/null
 
 # T20: keep every supported RAM tier and its runtime tuning visible in the
 # README, including the explicit warning for the minimum tier.
