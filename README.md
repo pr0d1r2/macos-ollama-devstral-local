@@ -199,12 +199,35 @@ is expected when enabling this trusted-network endpoint. Decline it, or
 restrict the firewall rule, if the network is not trusted. See `SPEC.md` for
 the full security model.
 
-## Runtime vs dev
+## Development and CI
 
-- **Runtime** is bare: POSIX `sh` plus `curl` and macOS built-ins. No
-  package manager, no build step.
-- **Dev/CI** uses Nix + [lefthook](https://github.com/evilmartians/lefthook)
-  guardrails, kept separate from the runtime. End users never need Nix.
+The development and CI layer is separate from the runtime. To enter the
+default development shell, install Nix and run:
+
+```sh
+nix develop
+```
+
+The shell provides the pinned guardrail tools and materializes the repository's
+lefthook configuration. Run the same checks locally that run at commit and
+push time with:
+
+```sh
+lefthook run pre-commit
+lefthook run pre-push
+```
+
+CI uses the repository's `nix-lefthook` guardrail action through the workflow
+in `.github/workflows/ci.yml`. The complete CI confirmation app is also
+available locally for troubleshooting:
+
+```sh
+nix run .#confirm
+```
+
+This is dev/CI tooling only. The ZIP workflow above still needs no Nix,
+lefthook, package manager, build step, or other development dependency:
+runtime is just POSIX `sh`, `curl`, and macOS built-ins.
 
 ## License
 
