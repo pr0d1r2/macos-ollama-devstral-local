@@ -127,7 +127,7 @@ T30|x|wrappers substitute template via sed → agent config path (T25-T27 read t
 T31|x|flake.nix devShell — nix-dev-shell-agentic mkShells CI/dev split (dev/CI only)|C17,V29,I.dev
 T32|x|lefthook.yml — baseline 15 remotes done. Pending: execute-permissions, bats-unit/changed, unit-coverage, xmllint, taplo, markdownlint, actionlint, gitleaks|V30,V31,V32,V33,I.hooks
 T33|x|.github/workflows/ci.yml — nix develop .#ci lefthook run, ubuntu + macos|C17,V30,I.ci
-T34|.|tests/unit/*.bats — per-script, curl mocked via MOCK_BIN; template-substitution tests|V31,I.helpers
+T34|x|tests/unit/*.bats — per-script, curl mocked via MOCK_BIN; template-substitution tests|V31,I.helpers
 T35|.|README — dev/CI section: nix devShell, lefthook, CI action (runtime needs none)|C17,I.readme
 
 ## §B BUGS
