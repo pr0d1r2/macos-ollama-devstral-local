@@ -8,10 +8,18 @@ trap 'rm -rf "$mock_bin"' EXIT HUP INT TERM
 # A zip/unzip round trip may drop the executable bit. The documented
 # `sh start.sh` bootstrap must repair it for a subsequent direct invocation.
 exec_bit_test_dir=$(mktemp -d)
-trap 'rm -rf "$mock_bin" "$exec_bit_test_dir"' EXIT HUP INT TERM
+exec_bit_mock_bin=$(mktemp -d)
+trap 'rm -rf "$mock_bin" "$exec_bit_test_dir" "$exec_bit_mock_bin"' EXIT HUP INT TERM
 cp "$repo_dir/start.sh" "$exec_bit_test_dir/start.sh"
 chmod 644 "$exec_bit_test_dir/start.sh"
-sh "$exec_bit_test_dir/start.sh" 2>/dev/null || true
+# Stop at the architecture guard after the entrypoint repairs its mode. This
+# must not open the real download page or wait for Ollama.app on the host.
+cat >"$exec_bit_mock_bin/uname" <<'EOF'
+#!/bin/sh
+printf '%s\n' x86_64
+EOF
+chmod +x "$exec_bit_mock_bin/uname"
+PATH="$exec_bit_mock_bin:$PATH" sh "$exec_bit_test_dir/start.sh" 2>/dev/null || true
 [ -x "$exec_bit_test_dir/start.sh" ]
 
 cat >"$mock_bin/uname" <<'EOF'
