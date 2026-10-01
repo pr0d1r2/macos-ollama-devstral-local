@@ -14,7 +14,7 @@ case "$*" in
     */api/show*) printf '%s\n' '{"name":"devstral"}' ;;
     */api/ps*) printf '%s\n' '{"models":[]}' ;;
     */api/tags*) printf '%s\n' '{"models":[{"name":"devstral:latest"}]}' ;;
-    */v1/models*) printf '%s\n' '{"data":[{"id":"devstral"}]}' ;;
+    */v1/models*) printf '%s\n' '{"data":[{"id":"custom"}]}' ;;
 esac
 EOF
     chmod +x "$MOCK_BIN/curl"
