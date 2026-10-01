@@ -128,7 +128,7 @@ T31|x|flake.nix devShell — nix-dev-shell-agentic mkShells CI/dev split (dev/CI
 T32|x|lefthook.yml — baseline 15 remotes done. Pending: execute-permissions, bats-unit/changed, unit-coverage, xmllint, taplo, markdownlint, actionlint, gitleaks|V30,V31,V32,V33,I.hooks
 T33|x|.github/workflows/ci.yml — nix develop .#ci lefthook run, ubuntu + macos|C17,V30,I.ci
 T34|x|tests/unit/*.bats — per-script, curl mocked via MOCK_BIN; template-substitution tests|V31,I.helpers
-T35|.|README — dev/CI section: nix devShell, lefthook, CI action (runtime needs none)|C17,I.readme
+T35|x|README — dev/CI section: nix devShell, lefthook, CI action (runtime needs none)|C17,I.readme
 
 ## §B BUGS
 
